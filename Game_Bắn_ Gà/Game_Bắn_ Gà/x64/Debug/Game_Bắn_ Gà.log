@@ -1,0 +1,20 @@
+﻿  Game.cpp
+D:\Coder\Game_Bắn_ Gà\Game.cpp(250,49): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+D:\Coder\Game_Bắn_ Gà\Game.cpp(250,49): warning C4244:         with
+D:\Coder\Game_Bắn_ Gà\Game.cpp(250,49): warning C4244:         [
+D:\Coder\Game_Bắn_ Gà\Game.cpp(250,49): warning C4244:             T=unsigned int
+D:\Coder\Game_Bắn_ Gà\Game.cpp(250,49): warning C4244:         ]
+D:\Coder\Game_Bắn_ Gà\Game.cpp(257,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Coder\Game_Bắn_ Gà\Game.cpp(265,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Coder\Game_Bắn_ Gà\Game.cpp(290,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Coder\Game_Bắn_ Gà\Game.cpp(292,93): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+D:\Coder\Game_Bắn_ Gà\Game.cpp(292,93): warning C4244:         with
+D:\Coder\Game_Bắn_ Gà\Game.cpp(292,93): warning C4244:         [
+D:\Coder\Game_Bắn_ Gà\Game.cpp(292,93): warning C4244:             T=unsigned int
+D:\Coder\Game_Bắn_ Gà\Game.cpp(292,93): warning C4244:         ]
+D:\Coder\Game_Bắn_ Gà\Game.cpp(311,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Coder\Game_Bắn_ Gà\Game.cpp(319,16): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  main.cpp
+  Generating Code...
+sfml-main-d.lib(MainWin32.obj) : warning LNK4099: PDB 'sfml-main-s.pdb' was not found with 'sfml-main-d.lib(MainWin32.obj)' or at 'D:\Coder\Game_B?n_ Gà\x64\Debug\sfml-main-s.pdb'; linking object as if no debug info
+  Game_Bắn_ Gà.vcxproj -> D:\Coder\Game_Bắn_ Gà\x64\Debug\Game_Bắn_ Gà.exe
