@@ -1,4 +1,4 @@
-﻿#include "Bullet.h"
+#include "Bullet.h"
 
 // --- TRIỂN KHAI HÀM DỰNG MỚI ---
 Bullet::Bullet(sf::Texture& texture, sf::Vector2f startPosition,
