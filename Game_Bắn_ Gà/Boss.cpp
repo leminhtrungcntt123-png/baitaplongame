@@ -1,10 +1,10 @@
-﻿#include "Boss.h"
+#include "Boss.h"
 
 // Hàm Dựng Boss:
 // Gọi hàm dựng Cha: 50 HP, Tốc độ 50 (rất chậm)
 Boss::Boss(sf::Texture& texture, sf::Vector2f startPosition, sf::Texture& bulletTexture)
 // 2. Thêm vào danh sách khởi tạo
-    : EnemyBase(20, 50.f),
+    : EnemyBase(50, 50.f),
     mBossBulletTextureRef(bulletTexture) // <-- LƯU ĐẠN VÀO "TÚI"
 {
     // Boss luôn luôn rơi đồ (100% cơ hội)
@@ -25,7 +25,7 @@ Boss::Boss(sf::Texture& texture, sf::Vector2f startPosition, sf::Texture& bullet
     this->sprite.setPosition(startPosition);
 
     // Boss bắn chậm hơn (1.5 giây/lần)
-    mShootCooldown = 1.5f;
+    shootCooldown = 1.5f;
 }
 
 // Hàm Update Boss:
