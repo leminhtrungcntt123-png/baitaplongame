@@ -1,4 +1,4 @@
-﻿#include "Game.h"
+#include "Game.h"
 #include "CollisionManager.h"
 #include "EnemyLvl1.h"
 #include "EnemyLvl3.h"
@@ -21,6 +21,7 @@ Game::Game()
     mScore(0)
 {
     mWindow.setFramerateLimit(60);
+    updateView();
     loadAssets();
     // --- KẾT NỐI ÂM THANH (THÊM VÀO ĐÂY) ---
     mShootSound.setBuffer(mShootBuffer);
@@ -47,7 +48,7 @@ Game::Game()
     
     // --- THIẾT LẬP UI (THÊM VÀO ĐÂY) ---
     mWinText.setFont(mFont);
-    mWinText.setString("CHIEN THANG!");
+    mWinText.setString("YOU WIN!");
     mWinText.setCharacterSize(64);
     mWinText.setFillColor(sf::Color::Yellow);
 
@@ -58,42 +59,47 @@ Game::Game()
     mGameOverText.setFillColor(sf::Color::Red);
 
     // Căn chữ ra giữa màn hình
-    sf::FloatRect textBounds = mWinText.getLocalBounds();
-    mWinText.setOrigin(textBounds.left + textBounds.width / 2.f,
-        textBounds.top + textBounds.height / 2.f);
+    // Căn chữ "WIN" ra giữa màn hình
+    sf::FloatRect winBounds = mWinText.getLocalBounds();
+    mWinText.setOrigin(winBounds.left + winBounds.width / 2.f,
+        winBounds.top + winBounds.height / 2.f);
     mWinText.setPosition(mWindow.getSize().x / 2.f, mWindow.getSize().y / 2.f);
 
-    // --- THÊM CÁC DÒNG NÀY VÀO CUỐI HÀM DỰNG ---
+    // Căn chữ "GAME OVER" ra giữa màn hình
+    sf::FloatRect loseBounds = mGameOverText.getLocalBounds();
+    mGameOverText.setOrigin(loseBounds.left + loseBounds.width / 2.f,
+        loseBounds.top + loseBounds.height / 2.f);
+    mGameOverText.setPosition(mWindow.getSize().x / 2.f, mWindow.getSize().y / 2.f);
 
-// Setup Nút "START GAME"
-    mStartButton.setFont(mFont);
-    mStartButton.setString("START GAME");
-    mStartButton.setCharacterSize(40); // Cỡ chữ 40
-    mStartButton.setFillColor(sf::Color::White);
+    // --- THÊM CODE SETUP "SPRITE" (ĐỒ HỌA) MENU MỚI ---
 
-    // Căn giữa nút "START"
-    sf::FloatRect startBounds = mStartButton.getLocalBounds();
-    mStartButton.setOrigin(startBounds.left + startBounds.width / 2.f,
-        startBounds.top + startBounds.height / 2.f);
-    mStartButton.setPosition(mWindow.getSize().x / 2.f,
-        mWindow.getSize().y / 2.f - 50.f); // Đặt ở giữa, dịch lên 50
+    // 1. Setup Nền Menu
+    mMenuBackgroundSprite.setTexture(mMenuBackgroundTexture);
+    // (Tự động co giãn "nền" (background) "mới" (new) vừa 800x600)
+    mMenuBackgroundSprite.setScale(
+        (float)mWindow.getSize().x / mMenuBackgroundSprite.getLocalBounds().width,
+        (float)mWindow.getSize().y / mMenuBackgroundSprite.getLocalBounds().height
+    );
 
-    // Setup Nút "EXIT"
-    mExitButton.setFont(mFont);
-    mExitButton.setString("EXIT");
-    mExitButton.setCharacterSize(40);
-    mExitButton.setFillColor(sf::Color::White);
+    // 2. Setup Tiêu Đề (Logo)
+    mTitleSprite.setTexture(mTitleTexture);
+    mTitleSprite.setScale(0.8f, 0.8f);  // chỉnh size cho  title
+    // (Căn giữa "Tiêu Đề" (Title) ở "trên" (top))
+    sf::FloatRect titleBounds = mTitleSprite.getLocalBounds();
+    mTitleSprite.setOrigin(titleBounds.left + titleBounds.width / 2.f, 0.f);
+    mTitleSprite.setPosition(mWindow.getSize().x / 2.f, 30.f); // (Cách đỉnh 50px)
 
-    // Căn giữa nút "EXIT"
-    sf::FloatRect exitBounds = mExitButton.getLocalBounds();
-    mExitButton.setOrigin(exitBounds.left + exitBounds.width / 2.f,
-        exitBounds.top + exitBounds.height / 2.f);
-    mExitButton.setPosition(mWindow.getSize().x / 2.f,
-        mWindow.getSize().y / 2.f + 50.f); // Đặt ở giữa, dịch xuống 50
+    // 3. Setup Nút "Play"
+    mPlayButtonSprite.setTexture(mPlayButtonTexture);
+    mPlayButtonSprite.setScale(1.0f, 1.0f); // (Chỉnh 0.5f cho vừa ý)
+    // (Căn giữa "Nút Play" (Play Button) ở "giữa" (center) màn hình)
+    sf::FloatRect playBounds = mPlayButtonSprite.getLocalBounds();
+    mPlayButtonSprite.setOrigin(playBounds.left + playBounds.width / 2.f,
+        playBounds.top + playBounds.height / 2.f);
+    mPlayButtonSprite.setPosition(mWindow.getSize().x / 2.f,
+        mWindow.getSize().y / 2.f + 80.f); // (Dịch xuống 50px)
 
-    // --- THÊM CODE SETUP NÀY VÀO ---
-
-// Setup Thông Báo "VÒNG 2"
+    // Setup Thông Báo "VÒNG 2"
     mWaveNotifyText.setFont(mFont);
     mWaveNotifyText.setCharacterSize(64); // Cỡ chữ lớn
     mWaveNotifyText.setFillColor(sf::Color::White);
@@ -111,7 +117,22 @@ Game::Game()
     mPlayerHPText.setCharacterSize(24); // Cỡ chữ nhỏ
     mPlayerHPText.setFillColor(sf::Color::White);
     mPlayerHPText.setPosition(15.f, 15.f); // Góc trên bên trái
-    mPlayerHPText.setString("HP: 10");
+    // --- SETUP HP BAR (THÊM VÀO ĐÂY) ---
+    float hpBarWidth = 150.f;  // (Chiều rộng tối đa 150px)
+    float hpBarHeight = 20.f; // (Chiều cao 20px)
+
+    // 1. Setup Nền (Background)
+    mHpBarBackground.setSize(sf::Vector2f(hpBarWidth, hpBarHeight));
+    mHpBarBackground.setFillColor(sf::Color(50, 50, 50)); // (Màu Xám Đen)
+    mHpBarBackground.setOutlineColor(sf::Color::White);
+    mHpBarBackground.setOutlineThickness(1.f);
+    // (Đặt vị trí: Nằm bên phải chữ "HP", ví dụ: X = 60)
+    mHpBarBackground.setPosition(60.f, 18.f);
+
+    // 2. Setup Ruột (Foreground)
+    mHpBarForeground.setSize(sf::Vector2f(hpBarWidth, hpBarHeight));
+    mHpBarForeground.setFillColor(sf::Color::Green); // (Màu Xanh Lá)
+    mHpBarForeground.setPosition(60.f, 18.f); // (Nằm y hệt Nền)
 
     // Setup Chữ "SCORE"
     mScoreText.setFont(mFont);
@@ -123,6 +144,59 @@ Game::Game()
     sf::FloatRect scoreBounds = mScoreText.getLocalBounds();
     mScoreText.setOrigin(scoreBounds.left + scoreBounds.width, 0.f); // Căn lề phải
     mScoreText.setPosition(mWindow.getSize().x - 15.f, 15.f); // Đặt ở góc (x-15, y=15)
+
+    // --- SETUP LOGIC PAUSE (THÊM VÀO CUỐI HÀM DỰNG) ---
+
+    // 1. Setup Nút Kích Hoạt (||)
+   // 1. Setup Nút Kích Hoạt (||) [ĐÃ VÁ LẦN 2 - FIX LỖI CLICK]
+    mPauseButtonSprite.setTexture(mPauseButtonTexture);
+    mPauseButtonSprite.setScale(0.8f, 0.8f);
+
+    // --- CHỈNH VỊ TRÍ (Góc Dưới-Trái) [FIX LỖI CLICK] ---
+    // (Chúng ta KHÔNG DÙNG setOrigin() nữa)
+
+    // (Lấy "kích thước đã scale" (scaled size) của nút SAU KHI setScale)
+    sf::FloatRect pauseBounds = mPauseButtonSprite.getGlobalBounds();
+
+    float padding = 20.f; // (Cách lề 20px)
+
+    // "Đặt" (Set) "vị trí" (position) "Tọa độ X" (X-Coord)
+    float pausePosX = padding;
+
+    // "Đặt" (Set) "vị trí" (position) "Tọa độ Y" (Y-Coord)
+    float pausePosY = (float)mWindow.getSize().y - padding - pauseBounds.height;
+
+    // (SetPosition "này" (this) "sẽ" (will) "đặt" (set) "GÓC TRÊN-TRÁI" (TOP-LEFT) "của" (of) "nút" (button))
+    mPauseButtonSprite.setPosition(pausePosX, pausePosY);
+    // 2. Setup Lớp Phủ Mờ
+    mPauseOverlay.setSize(sf::Vector2f(mWindow.getSize().x, mWindow.getSize().y));
+    mPauseOverlay.setFillColor(sf::Color(0, 0, 0, 150)); // (Màu đen, 150/255 độ mờ)
+    // (Không cần setPosition, vì (0,0) là mặc định)
+
+    // 3. Setup Nút "CHƠI TIẾP" (Resume)
+    mPauseResumeButton.setFont(mFont);
+    mPauseResumeButton.setString("CHOI TIEP");
+    mPauseResumeButton.setCharacterSize(40);
+    mPauseResumeButton.setFillColor(sf::Color::White);
+
+    // (Căn giữa)
+    sf::FloatRect resumeBounds = mPauseResumeButton.getLocalBounds();
+    mPauseResumeButton.setOrigin(resumeBounds.left + resumeBounds.width / 2.f,
+        resumeBounds.top + resumeBounds.height / 2.f);
+    mPauseResumeButton.setPosition(mWindow.getSize().x / 2.f,
+        mWindow.getSize().y / 2.f - 50.f);
+
+    // 4. Setup Nút "THOÁT" (Exit)
+    mPauseExitButton.setFont(mFont);
+    mPauseExitButton.setString("THOAT");
+    mPauseExitButton.setCharacterSize(40);
+    mPauseExitButton.setFillColor(sf::Color::White);
+    // (Căn giữa)
+    sf::FloatRect exitBounds = mPauseExitButton.getLocalBounds();
+    mPauseExitButton.setOrigin(exitBounds.left + exitBounds.width / 2.f,
+        exitBounds.top + exitBounds.height / 2.f);
+    mPauseExitButton.setPosition(mWindow.getSize().x / 2.f,
+        mWindow.getSize().y / 2.f + 50.f);
 }
 
 // --- HÀM TẢI TÀI NGUYÊN ---
@@ -145,8 +219,8 @@ void Game::loadAssets()
     if (!mPowerupTexture.loadFromFile("powerup.png"))
         throw std::runtime_error("Error: Khong the tai file powerup.png!");
 
-    if (!mBackgroundTexture.loadFromFile("background.png"))
-        throw std::runtime_error("Error: Khong the tai file background.png!");
+    if (!mBackgroundTexture.loadFromFile("gameplay_background.png"))
+        throw std::runtime_error("Error: Khong the tai file gameplay_background.png!");
 
     if (!mFont.loadFromFile("font.ttf"))
         throw std::runtime_error("Error: Khong the tai file font.ttf!");
@@ -171,6 +245,18 @@ void Game::loadAssets()
 
     if (!mBossBulletTexture.loadFromFile("BulletBoss.png"))
         throw std::runtime_error("Error: Khong the tai file BulletBoss.png!");
+
+    if (!mMenuBackgroundTexture.loadFromFile("background.png")) // <-- Tên file nền MỚI của bạn
+        throw std::runtime_error("Error: Khong the tai menu_background.png!");
+
+    if (!mTitleTexture.loadFromFile("title.png")) // <-- Tên file tiêu đề MỚI của bạn
+        throw std::runtime_error("Error: Khong the tai menu_title.png!");
+
+    if (!mPlayButtonTexture.loadFromFile("play_button.png")) // <-- Tên file nút MỚI của bạn
+        throw std::runtime_error("Error: Khong the tai menu_play_button.png!");
+
+    if (!mPauseButtonTexture.loadFromFile("pause_button.png"))
+        throw std::runtime_error("Error: Khong the tai file pause_button.png!");
 }
 // --- HÀM "RUN" CHÍNH ---
 // Đây chính là Game Loop của bạn
@@ -201,7 +287,11 @@ void Game::processInput()
     {
         if (event.type == sf::Event::Closed)
             mWindow.close();
-
+        else if (event.type == sf::Event::Resized)
+        {
+            // "THI CÔNG" (EXECUTE) "LOGIC" (LOGIC) "LETTERBOXING" (LETTERBOXING)
+            updateView();
+        }
         // --- LOGIC MỚI: XỬ LÝ THEO TRẠNG THÁI ---
 
         // 1. Nếu đang ở MAIN MENU, chỉ lắng nghe click chuột
@@ -215,14 +305,9 @@ void Game::processInput()
                     sf::Vector2f mousePos = mWindow.mapPixelToCoords(sf::Mouse::getPosition(mWindow));
 
                     // Kiểm tra xem có click trúng nút "START" không
-                    if (mStartButton.getGlobalBounds().contains(mousePos))
+                    if (mPlayButtonSprite.getGlobalBounds().contains(mousePos))
                     {
-                        mGameState = GameState::Playing; // Chuyển trạng thái
-                    }
-                    // Kiểm tra xem có click trúng nút "EXIT" không
-                    if (mExitButton.getGlobalBounds().contains(mousePos))
-                    {
-                        mWindow.close(); // Thoát game
+                        mGameState = GameState::Playing;
                     }
                 }
             }
@@ -231,6 +316,41 @@ void Game::processInput()
         else if (mGameState == GameState::Playing)
         {
             mPlayer->handleInput(event);
+            if (event.type == sf::Event::MouseButtonPressed)
+            {
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos = mWindow.mapPixelToCoords(sf::Mouse::getPosition(mWindow));
+
+                    // (Đây là logic "bắt click" bị thiếu)
+                    if (mPauseButtonSprite.getGlobalBounds().contains(mousePos))
+                    {
+                        mGameState = GameState::Paused; // <-- CHUYỂN TRẠNG THÁI
+                    }
+                }
+            }
+        }
+        else if (mGameState == GameState::Paused)
+        {
+            // "Bắt" (Catch) "click" (click) "để" (to) "Resume" (Resume) "hoặc" (or) "Exit" (Exit)
+            if (event.type == sf::Event::MouseButtonPressed)
+            {
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos = mWindow.mapPixelToCoords(sf::Mouse::getPosition(mWindow));
+
+                    // Click "CHƠI TIẾP"?
+                    if (mPauseResumeButton.getGlobalBounds().contains(mousePos))
+                    {
+                        mGameState = GameState::Playing; // <-- CHUYỂN TRẠNG THÁI
+                    }
+                    // Click "THOÁT"?
+                    if (mPauseExitButton.getGlobalBounds().contains(mousePos))
+                    {
+                        mWindow.close(); // <-- ĐÓNG GAME
+                    }
+                }
+            }
         }
     }
 }
@@ -238,6 +358,43 @@ void Game::processInput()
 // --- PHÒNG BAN CẬP NHẬT LOGIC ---
 void Game::update(float deltaTime)
 {
+    // 1. Chỉ kiểm tra "Hover" khi đang ở Main Menu
+    if (mGameState == GameState::MainMenu)
+    {
+        // Lấy tọa độ chuột (chuyển đổi từ pixel cửa sổ sang tọa độ game)
+        sf::Vector2f mousePos = mWindow.mapPixelToCoords(sf::Mouse::getPosition(mWindow));
+
+        // Kiểm tra nút "START"
+        if (mPlayButtonSprite.getGlobalBounds().contains(mousePos))
+        {
+            // "Phóng to" (Scale up) 1.1x khi "hover" (hover)
+            mPlayButtonSprite.setScale(1.1f, 1.1f);
+        }
+        else
+        {
+            // "Về" (Reset) "kích thước" (scale) 1.0x "gốc" (original)
+            mPlayButtonSprite.setScale(1.0f, 1.0f);
+        }
+    }
+
+    // --- THÊM KHỐI "ELSE IF" NÀY VÀO ---
+    else if (mGameState == GameState::Paused)
+    {
+        // "Thi công" (Implement) "Hover" (Hover) "cho" (for) "Menu Pause" (Pause Menu)
+        sf::Vector2f mousePos = mWindow.mapPixelToCoords(sf::Mouse::getPosition(mWindow));
+
+        // Hover "CHƠI TIẾP"
+        if (mPauseResumeButton.getGlobalBounds().contains(mousePos))
+            mPauseResumeButton.setFillColor(sf::Color::Yellow);
+        else
+            mPauseResumeButton.setFillColor(sf::Color::White);
+
+        // Hover "THOÁT"
+        if (mPauseExitButton.getGlobalBounds().contains(mousePos))
+            mPauseExitButton.setFillColor(sf::Color::Yellow);
+        else
+            mPauseExitButton.setFillColor(sf::Color::White);
+    }
     // Chỉ cập nhật nếu đang "Playing"
     if (mGameState != GameState::Playing)
     {
@@ -268,7 +425,7 @@ void Game::updatePlayer(float deltaTime)
 {
     // (Dán code update Player)
     // Lấy "cờ báo hiệu" (shotFired) từ update
-    bool shotFired = mPlayer->update(deltaTime, static_cast<float>(mWindow.getSize().x));
+    bool shotFired = mPlayer->update(deltaTime, 800.f);
     if (shotFired)
     {
         mShootSound.play(); // Chơi âm thanh ở đây
@@ -278,7 +435,7 @@ void Game::updatePlayer(float deltaTime)
 void Game::updateBullets(float deltaTime)
 {
     // (Dán code update Đạn Tàu)
-    for (int i = mPlayerBullets.size() - 1; i >= 0; i--) {
+    for (int i = (int)mPlayerBullets.size() - 1; i >= 0; i--) {
         mPlayerBullets[i].update(deltaTime);
         if (mPlayerBullets[i].sprite.getPosition().y < 0) {
             mPlayerBullets.erase(mPlayerBullets.begin() + i);
@@ -313,20 +470,20 @@ void Game::updateEntities(float deltaTime)
     // (Dán code update Quái)
     for (int i = mEnemies.size() - 1; i >= 0; i--)
     {
-        mEnemies[i]->update(deltaTime, mEnemyBullets, mEnemyBulletTexture, mWindow.getSize().x);
+        mEnemies[i]->update(deltaTime, mEnemyBullets, mEnemyBulletTexture, 800.f);
 
-        if (mEnemies[i]->sprite.getPosition().y > mWindow.getSize().y) {
+        if (mEnemies[i]->getPosition().y > mWindow.getSize().y) {
             mEnemies.erase(mEnemies.begin() + i);
         }
         else if (!mEnemies[i]->isAlive()) {
-            sf::Vector2f deadPos = mEnemies[i]->sprite.getPosition();
-            EnemyBase::LootType drop = mEnemies[i]->dropType;
+            sf::Vector2f deadPos = mEnemies[i]->getPosition();
+            LootType drop = mEnemies[i]->dropType;
             mScore += mEnemies[i]->scoreValue; // Cộng điểm!
             mEnemies.erase(mEnemies.begin() + i);
             mExplosionSound.play();
             mExplosions.push_back(Explosion(deadPos));
 
-            if (drop == EnemyBase::UpgradeGun) {
+            if (drop == LootType::UpgradeGun) {
                 mPowerups.push_back(Powerup(mPowerupTexture, deadPos, Powerup::UpgradeGun));
             }
         }
@@ -374,14 +531,15 @@ void Game::render()
 
     if (mGameState == GameState::MainMenu)
     {
-        // --- VẼ GIAO DIỆN MENU ---
-        mWindow.draw(mStartButton);
-        mWindow.draw(mExitButton);
+        // --- VẼ GIAO DIỆN MENU (Đồ Họa Mới) ---
+        mWindow.draw(mMenuBackgroundSprite); // (Vẽ "nền" (background) MENU)
+        mWindow.draw(mTitleSprite);
+        mWindow.draw(mPlayButtonSprite);
     }
     else
     {
         // --- VẼ GIAO DIỆN GAME (Playing, Won, GameOver) ---
-
+        mWindow.draw(mBackgroundSprite); // (Vẽ "nền" (background) GAMEPLAY)
         // Vẽ Kẻ thù
         for (auto& enemy : mEnemies) {
             enemy->draw(mWindow);
@@ -404,15 +562,42 @@ void Game::render()
         for (auto& bullet : mEnemyBullets) {
             bullet.draw(mWindow);
         }
+
+        // --- VẼ HUD (Thứ tự rất quan trọng) ---
+        mWindow.draw(mPlayerHPText); // (Vẽ chữ "HP")
+
+        // (Vẽ Nền TRƯỚC)
+        mWindow.draw(mHpBarBackground);
+        // (Vẽ Ruột SAU (đè lên Nền))
+        mWindow.draw(mHpBarForeground);
+
         // (Vẽ nó TRƯỚC UI Thắng/Thua)
         mWindow.draw(mPlayerHPText);
+        // Điểm
         mWindow.draw(mScoreText);
+        // --- THÊM DÒNG NÀY (VẼ NÚT PAUSE "||") ---
+        mWindow.draw(mPauseButtonSprite);
 
-        // --- SỬA LOGIC VẼ UI (Thắng/Thua/Khoảng nghỉ) ---
+        // --- LOGIC VẼ UI (Thắng/Thua/Khoảng nghỉ) ---
         if (mGameState == GameState::Won) {
+            // 1. Vẽ BÓNG (Đen, dịch 3px)
+            mWinText.setFillColor(sf::Color::Black);
+            mWinText.setPosition(800.f / 2.f + 3.f, 600.f / 2.f + 3.f);
+            mWindow.draw(mWinText);
+            // 2. Vẽ CHỮ (Vàng, vị trí cũ)
+            mWinText.setFillColor(sf::Color::Yellow);
+            mWinText.setPosition(800.f / 2.f, 600.f / 2.f);
             mWindow.draw(mWinText);
         }
         else if (mGameState == GameState::GameOver) {
+            // 1. Vẽ BÓNG (Đen, dịch 3px)
+            mGameOverText.setFillColor(sf::Color::Black);
+            mGameOverText.setPosition(800.f / 2.f + 3.f, 600.f / 2.f + 3.f);
+            mWindow.draw(mGameOverText);
+
+            // 2. Vẽ CHỮ (Đỏ, vị trí cũ)
+            mGameOverText.setFillColor(sf::Color::Red);
+            mGameOverText.setPosition(800.f / 2.f, 600.f / 2.f);
             mWindow.draw(mGameOverText);
         }
         // --- THÊM KHỐI "ELSE IF" NÀY VÀO ---
@@ -429,21 +614,96 @@ void Game::render()
 
             mWindow.draw(mWaveNotifyText);
         }
+        if (mGameState == GameState::Paused)
+        {
+            mWindow.draw(mPauseOverlay);      // 1. Vẽ Lớp Phủ Mờ
+            mWindow.draw(mPauseResumeButton); // 2. Vẽ Nút "Chơi Tiếp"
+            mWindow.draw(mPauseExitButton);   // 3. Vẽ Nút "Thoát"
+        }
     }
     mWindow.display();
 }
 // --- THÊM HÀM MỚI NÀY VÀO CUỐI FILE ---
 void Game::updateHUD()
 {
-    // Cập nhật HP (Code cũ từ updatePlayer)
-    mPlayerHPText.setString("HP: " + std::to_string(mPlayer->getHP()));
+    // --- "VÁ" (PATCH) LOGIC HP ---
+    int currentHp = mPlayer->getHP();
+    int maxHp = 10; // (Hardcode "HP Tối Đa" của Player)
 
-    // Cập nhật Score
+    // 1. Cập nhật Chữ (Text)
+    // (Chỉ hiện "HP", không hiện số, thanh bar sẽ lo)
+    mPlayerHPText.setString("HP");
+
+    // 2. Cập nhật Thanh (Bar)
+    // (Tính toán % máu còn lại)
+    float hpPercent = (float)currentHp / (float)maxHp;
+    if (hpPercent < 0) hpPercent = 0; // (Không cho âm)
+
+    // (Lấy chiều rộng "tối đa" của thanh bar)
+    float fullBarWidth = mHpBarBackground.getSize().x;
+
+    // (Cập nhật "chiều rộng" (width) của "ruột" (foreground))
+    mHpBarForeground.setSize(sf::Vector2f(fullBarWidth * hpPercent,
+        mHpBarForeground.getSize().y));
+
+    // (Tùy chọn: Đổi màu khi máu thấp)
+    if (hpPercent < 0.3f) // (Dưới 30% máu)
+        mHpBarForeground.setFillColor(sf::Color::Red);
+    else if (hpPercent < 0.6f) // (Dưới 60% máu)
+        mHpBarForeground.setFillColor(sf::Color::Yellow);
+    else
+        mHpBarForeground.setFillColor(sf::Color::Green);
+
+
+    // --- Cập nhật Score (Giữ nguyên) ---
     mScoreText.setString("SCORE: " + std::to_string(mScore));
 
-    // Căn lề PHẢI lại cho Score (Vì "SCORE: 1000" rộng hơn "SCORE: 0")
+    // (Code căn lề phải CŨ... giữ nguyên)
     sf::FloatRect scoreBounds = mScoreText.getLocalBounds();
     mScoreText.setOrigin(scoreBounds.left + scoreBounds.width, 0.f);
     mScoreText.setPosition(mWindow.getSize().x - 15.f, 15.f);
+}
+void Game::updateView()
+{
+    // "Tỷ lệ" (Aspect Ratio) "Thiết Kế" (Design) (Game của chúng ta là 800x600, tức là 4:3)
+    const float DESIGN_WIDTH = 800.f;
+    const float DESIGN_HEIGHT = 600.f;
+    float designRatio = DESIGN_WIDTH / DESIGN_HEIGHT;
+
+    // "Kích thước" (Size) "Cửa Sổ" (Window) "Hiện Tại" (Current) (ví dụ: 1920x1080)
+    float windowWidth = (float)mWindow.getSize().x;
+    float windowHeight = (float)mWindow.getSize().y;
+    float windowRatio = windowWidth / windowHeight;
+
+    // "Tạo" (Create) "Camera" (View) "Logic" (Logical) (luôn là 800x600)
+    // "Camera" (View) "này" (this) "báo" (tells) "cho" (the) "game" (game) "biết" (that) "thế giới" (world) "chỉ" (is only) "rộng" (wide) "800px" (800px)
+    sf::View view(sf::FloatRect(0.f, 0.f, DESIGN_WIDTH, DESIGN_HEIGHT));
+
+    float viewportX = 0.f;
+    float viewportY = 0.f;
+    float viewportWidth = 1.f;
+    float viewportHeight = 1.f;
+
+    // "So sánh" (Compare) "tỷ lệ" (ratios)
+    if (windowRatio > designRatio)
+    {
+        // (Cửa sổ "RỘNG" (WIDER) hơn 4:3 -> Thêm "viền đen" (black bars) "hai bên" (sides))
+        // (Ví dụ: 16:9 > 4:3)
+        viewportWidth = designRatio / windowRatio;
+        viewportX = (1.f - viewportWidth) / 2.f;
+    }
+    else // (windowRatio <= designRatio)
+    {
+        // (Cửa sổ "CAO" (TALLER) hơn 4:3 -> Thêm "viền đen" (black bars) "trên dưới" (top/bottom))
+        viewportHeight = windowRatio / designRatio;
+        viewportY = (1.f - viewportHeight) / 2.f;
+    }
+
+    // "Thiết lập" (Set) "cái" (the) "khung" (viewport) "viền đen" (black bar)
+    // "Viewport" (Viewport) "này" (this) "báo" (tells) "SFML" (SFML) "chỉ" (to only) "vẽ" (draw) "ở" (in) "khu vực" (area) "giữa" (center) "này" (this)
+    view.setViewport(sf::FloatRect(viewportX, viewportY, viewportWidth, viewportHeight));
+
+    // "Áp dụng" (Apply) "Camera" (View) "tổng hợp" (combined) "này" (this)
+    mWindow.setView(view);
 }
    
