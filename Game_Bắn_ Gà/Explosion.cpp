@@ -1,4 +1,4 @@
-﻿#include "Explosion.h"
+#include "Explosion.h"
 
 Explosion::Explosion(sf::Vector2f position)
 {
