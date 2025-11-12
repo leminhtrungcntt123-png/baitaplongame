@@ -1,11 +1,11 @@
-﻿#include "EnemyLvl3.h"
+#include "EnemyLvl3.h"
 
 // Gọi hàm dựng của Cha: Quái Lvl3 có 5 HP, tốc độ 100
 EnemyLvl3::EnemyLvl3(sf::Texture& texture, sf::Vector2f startPosition)
     : EnemyBase(5, 100.f)
 {
-    this->dropType = UpgradeGun;
-    mShootCooldown = 1.5f;
+    this->dropType = LootType::UpgradeGun;
+    shootCooldown = 1.5f;
     this->sprite.setTexture(texture);
     this->sprite.setScale(1.0f, 1.0f);
     this->sprite.setPosition(startPosition);
