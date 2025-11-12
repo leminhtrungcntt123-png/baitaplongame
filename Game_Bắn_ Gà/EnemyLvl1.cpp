@@ -1,4 +1,4 @@
-﻿#include "EnemyLvl1.h"
+#include "EnemyLvl1.h"
 
 // Đây là phần "hóc búa": Constructor Của Con Gọi Constructor Của Cha
 // Cú pháp ": EnemyBase(1, 150.f)" có nghĩa là:
@@ -7,7 +7,7 @@
 EnemyLvl1::EnemyLvl1(sf::Texture& texture, sf::Vector2f startPosition)
     : EnemyBase(1, 150.f) // Quái Lvl1 có 1 HP, tốc độ 150
 {
-    this->dropType = None;
+    this->dropType = LootType::None;
     // Lớp con tự thiết lập sprite
     this->sprite.setTexture(texture);
     this->sprite.setScale(1.0f, 1.0f);
