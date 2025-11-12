@@ -1,4 +1,4 @@
-﻿#include "WaveManager.h"
+#include "WaveManager.h"
 #include <cstdlib> // Cho rand()
 #include "EnemyLvl2.h"
 #include "EnemyLvl1.h"
