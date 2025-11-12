@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
@@ -15,6 +15,7 @@ enum class GameState
 {
     MainMenu, // (Thêm ở Bước 7 Mới)
     Playing,
+    Paused,
     GameOver,
     Won
 };
@@ -37,6 +38,7 @@ private:
     void updateEntities(float deltaTime);
     void checkGameState();
     void updateHUD(); // Cập nhật HP và Score
+    void updateView();
 
     // --- Biến SFML ---
     sf::RenderWindow mWindow;
@@ -52,7 +54,14 @@ private:
     sf::Texture mPowerupTexture;
     sf::Texture mBackgroundTexture;
     sf::Texture mEnemyBulletTexture;
+    // Chỉnh giao diện ở menu
     sf::Texture mBossBulletTexture; // Cho BulletBoss.png
+    sf::Texture mMenuBackgroundTexture;  // giao diện background
+    sf::Sprite  mMenuBackgroundSprite;
+    sf::Texture mTitleTexture;              // title của game
+    sf::Sprite  mTitleSprite;
+    sf::Texture mPlayButtonTexture;         // nút play của game
+    sf::Sprite  mPlayButtonSprite;
 
     // --- Âm thanh ---
     sf::SoundBuffer mShootBuffer;
@@ -64,7 +73,7 @@ private:
 
     // --- Đối tượng Game ---
     std::unique_ptr<Player> mPlayer;
-    sf::Sprite mBackgroundSprite;
+    sf::Sprite mBackgroundSprite;   // background cho play_game
     std::vector<Bullet> mPlayerBullets;
     std::vector<Bullet> mEnemyBullets;
     std::vector<std::unique_ptr<EnemyBase>> mEnemies;
@@ -80,13 +89,23 @@ private:
     sf::Font mFont;
     sf::Text mWinText;
     sf::Text mGameOverText;
-    sf::Text mStartButton; // (Thêm ở Bước 7 Mới)
-    sf::Text mExitButton;  // (Thêm ở Bước 7 Mới)
+    // Tạo nút pause trong game play
+    sf::Texture mPauseButtonTexture; // Texture cho nút "||"
+    sf::Sprite  mPauseButtonSprite;  // Sprite cho nút "||"
+
+    sf::RectangleShape mPauseOverlay; // Lớp "phủ mờ" (dim overlay)
+
+    sf::Text mPauseResumeButton; // Chữ "CHƠI TIẾP"
+    sf::Text mPauseExitButton;   // Chữ "THOÁT"
 
     // (Thêm ở Bước 8)
     sf::Text mWaveNotifyText; 
     sf::Text mPlayerHPText;   
+    // --- THÊM "TÚI" MỚI CHO HP BAR ---
+    sf::RectangleShape mHpBarBackground; // "Nền" (ví dụ: màu xám)
+    sf::RectangleShape mHpBarForeground;
+
+    // Điểm 
     int mScore;           // Biến lưu điểm
     sf::Text mScoreText;  // Biến hiển thị điểm
-
 }; 
