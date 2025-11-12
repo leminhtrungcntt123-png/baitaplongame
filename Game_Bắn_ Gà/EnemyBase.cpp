@@ -1,113 +1,94 @@
-﻿#include "EnemyBase.h"
-#include <cstdlib> // <-- THÊM DÒNG NÀY (Để dùng rand())
-// Code cho Constructor
+#include "EnemyBase.h"
+
+// 1. "Kết nối" Móng (gọi Entity)
 EnemyBase::EnemyBase(int initialHp, float initialSpeed)
+    : Entity(initialHp, initialSpeed) // <-- "Kết nối" Móng
 {
-    this->hp = initialHp;
-    this->speed = initialSpeed;
-    this->mShootTimer = 0.f;
-    this->mShootCooldown = 2.0f;
-    this->dropType = None; // <-- THÊM DÒNG NÀY VÀO
-    this->mState = AIState::Entering; // Ban đầu ở trạng thái "Bay vào"
-    // Quyết định ngẫu nhiên xem sẽ bay sang trái hay phải
-    if (rand() % 2 == 0)
-        mHorizontalDirection = 1.f;
-    else
-        mHorizontalDirection = -1.f;
+    // Khởi tạo biến "RIÊNG"
+    mState = AIState::Entering;
+    mHorizontalDirection = 1.f;
+    dropType = LootType::None;
+    scoreValue = 0;
+    // (Không cần khởi tạo sprite, hp, speed... "Cha" (Entity) đã làm)
 }
 
-// Code cho hàm nhận sát thương
-void EnemyBase::takeDamage(int damage)
-{
-    this->hp -= damage;
-}
+// 2. XÓA BỎ các hàm "chung" (takeDamage, isAlive, draw)
 
-// Code cho hàm kiểm tra "còn sống"
-bool EnemyBase::isAlive()
-{
-    return this->hp > 0;
-}
-
+// 3. "Công thức" update (Giờ đã "chuẩn" 100% với tên biến của BẠN)
+// Logic update "CHUNG" MỚI (Đã "vá" 100%)
 void EnemyBase::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture, float windowWidth)
 {
-    // --- 1. LOGIC DI CHUYỂN (AI MỚI) ---
+    // 1. Cập nhật "Hẹn Giờ Bắn" (Dùng biến "Cha")
+    shootTimer += deltaTime;
+    if (shootTimer >= shootCooldown)
+    {
+        shootTimer = 0.f;
+        // "Ủy thác" (Delegate) "logic" (logic) "bắn" (shoot) "cho" (to) "Con" (Child) (Lvl1, Lvl2, Lvl3)
+        this->shoot(enemyBullets, enemyBulletTexture);
+    }
+
+    // 2. Logic "Di Chuyển" (Dùng biến "Cha")
     if (mState == AIState::Entering)
     {
-        // Trạng thái 1: Đang bay vào Waypoint (Giữ nguyên)
-        sf::Vector2f direction = mWaypoint - sprite.getPosition();
-        float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-
+        sf::Vector2f dir = mWaypoint - this->sprite.getPosition();
+        float distance = std::sqrt(dir.x * dir.x + dir.y * dir.y);
         if (distance < 5.f)
         {
-            mState = AIState::Attacking; // Chuyển trạng thái
-            sprite.setPosition(mWaypoint);
+            mState = AIState::Attacking;
         }
         else
         {
-            direction /= distance;
-            sprite.move(direction * this->speed * deltaTime);
+            dir /= distance;
+            this->sprite.move(dir * this->speed * deltaTime);
         }
     }
     else if (mState == AIState::Attacking)
     {
-        // --- TRẠNG THÁI 2: DI CHUYỂN NGANG (LOGIC MỚI) ---
+        this->sprite.move(mHorizontalDirection * this->speed * deltaTime, 0.f);
 
-        // 1. Di chuyển ngang
-        sprite.move(mHorizontalDirection * this->speed * deltaTime, 0.f);
-
-        // 2. Kiểm tra "đập" vào tường
-        sf::FloatRect bounds = sprite.getGlobalBounds();
-        if (bounds.left <= 0.f) // Đập vào tường trái
+        // --- "HỆ THỐNG RANH GIỚI" (BOUNDARY SYSTEM) (ĐÂY LÀ "BẢN VÁ") ---
+        sf::FloatRect bounds = this->sprite.getGlobalBounds();
+        if (bounds.left <= 0.f)
         {
-            mHorizontalDirection = 1.f; // Đổi hướng sang phải
+            this->sprite.setPosition(0.f, this->sprite.getPosition().y);
+            mHorizontalDirection = 1.f;
         }
-        else if (bounds.left + bounds.width >= windowWidth) // Đập vào tường phải
+        else if (bounds.left + bounds.width >= windowWidth)
         {
-            mHorizontalDirection = -1.f; // Đổi hướng sang trái
-        }
-    }
-
-    // --- 2. LOGIC BẮN (GIỮ NGUYÊN) ---
-    // Chỉ bắn khi đã vào vị trí (Attacking)
-    if (mState == AIState::Attacking)
-    {
-        mShootTimer += deltaTime;
-        if (mShootTimer >= mShootCooldown)
-        {
-            mShootTimer = 0.f;
-            shoot(enemyBullets, enemyBulletTexture);
+            this->sprite.setPosition(windowWidth - bounds.width, this->sprite.getPosition().y);
+            mHorizontalDirection = -1.f;
         }
     }
 }
-// Code MẶC ĐỊNH cho hàm draw
-void EnemyBase::draw(sf::RenderWindow& window)
-{
-    window.draw(this->sprite);
-}
+
+// 4. "Công thức" shoot (Rỗng)
 void EnemyBase::shoot(std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture)
 {
-    // Lớp Cha (Base) không bắn
+    // Lớp "Cha" (EnemyBase) không bắn
 }
 
+// 5. "Công thức" các hàm "Riêng" (setWaypoint, setLoot)
 void EnemyBase::setWaypoint(sf::Vector2f waypoint)
 {
-    this->mWaypoint = waypoint;
+    mWaypoint = waypoint;
+    float newX = waypoint.x;
+    // DÙNG TÊN "CHA": "sprite"
+    sf::FloatRect bounds = sprite.getGlobalBounds();
+    if (newX < bounds.width / 2.f)
+        newX = bounds.width / 2.f;
+    else if (newX > 800.f - bounds.width / 2.f)
+        newX = 800.f - bounds.width / 2.f;
+
+    mWaypoint.x = newX;
 }
 
 void EnemyBase::setLoot(int chance)
 {
-    // Lấy 1 số ngẫu nhiên từ 0 đến 99
     int roll = rand() % 100;
-
-    // Nếu "xúc xắc" nhỏ hơn tỷ lệ
     if (roll < chance)
-    {
         this->dropType = UpgradeGun;
-    }
     else
-    {
-        this->dropType = None; // Xịt
-    }
+        this->dropType = None;
 }
