@@ -1,121 +1,82 @@
-﻿#include "Player.h"
+#include "Player.h"
 
-// --- HÀM DỰNG (CONSTRUCTOR) ---
-// Dùng danh sách khởi tạo để gán các tham chiếu
+// 1. "Thi công" Hàm Dựng MỚI
 Player::Player(sf::Texture& playerTexture, sf::Texture& bulletTexture,
     std::vector<Bullet>& bullets, float bulletSpeed)
-    : mBulletTextureRef(bulletTexture), // Gán tham chiếu texture
-    mPlayerBulletsRef(bullets),        // Gán tham chiếu vector đạn
-    mGunLevel(1),                     // Tàu tự quản lý cấp súng
-    mMoveSpeed(700.f),               // Tàu tự quản lý tốc độ
-    mHp(10),                        // Khởi tạo Hp của tàu  
-    mMaxHp(10)
+    // 2. "Kết nối" Móng (Entity): 10 HP, 400 Speed
+    : Entity(20, 400.f),
+    // 3. Khởi tạo biến "RIÊNG"
+    mBulletTextureRef(bulletTexture),
+    mPlayerBulletsRef(bullets),
+    mGunLevel(1),
+    mBulletSpeed(bulletSpeed)
 {
-    // Tàu tự thiết lập sprite của mình
-    mSprite.setTexture(playerTexture);
-    mSprite.setScale(1.1f, 1.1f);
-    this->mBulletSpeed = bulletSpeed;
-    this->mShootCooldown = 0.5f; // Bắn 2 viên/giây (bạn có thể chỉnh 0.2f, 0.3f...)
-    this->mShootTimer = 0.5f; // Bắn ngay khi game bắt đầu
+    // 4. "Thi công" biến "chung" (của "Cha")
+    // (DÙNG TÊN "sprite" CỦA BẠN)
+    this->sprite.setTexture(playerTexture);
+    this->sprite.setScale(1.0f, 1.0f);
+
+    // 5. "Thi công" biến "chung" (của "Cha")
+    // (DÙNG TÊN "shoot..." CỦA BẠN)
+    this->shootCooldown = 0.5f;
+    this->shootTimer = 0.5f;
 }
 
-// Hàm này được gọi 1 lần từ Game.cpp
-void Player::setInitialPosition(float x, float y)
-{
-    mSprite.setPosition(x, y);
-}
+// 6. XÓA BỎ các hàm "chung" (takeDamage, isAlive, draw, getBounds...)
+// (Chúng đã được "dời" lên Entity.cpp)
 
-// --- PHÒNG BAN XỬ LÝ INPUT (SỰ KIỆN) ---
+// 7. "Công thức" các hàm "Riêng" (handleInput, upgradeGun...)
 void Player::handleInput(sf::Event& event)
 {
-    // Để trống. Input bắn đã chuyển sang update()
+    // (Để trống - Tự động bắn)
 }
 
-// --- PHÒNG BAN CẬP NHẬT LOGIC (TRẠNG THÁI) ---
+void Player::upgradeGun()
+{
+    if (mGunLevel < 3)
+        mGunLevel++;
+}
+
+// 8. "Công thức" update (Đã "vá" 100%)
+// 8. "Công thức" update (Đã "vá" 100%)
 bool Player::update(float deltaTime, float windowWidth)
 {
     bool shotFired = false;
 
-    // 1. Cập nhật đồng hồ bắn (Luôn luôn đếm)
-    mShootTimer += deltaTime;
+    shootTimer += deltaTime; // (Dùng biến "Cha")
 
-    // 2. XỬ LÝ LOGIC TỰ ĐỘNG BẮN (KHÔNG CẦN NHẤN PHÍM)
-    if (mShootTimer >= mShootCooldown)
+    if (shootTimer >= shootCooldown) // (Dùng biến "Cha")
     {
-        mShootTimer = 0.f; // Reset đồng hồ
-        shoot();           // Gọi hàm bắn "nội bộ"
-        shotFired = true;  // Bật cờ "báo hiệu"
+        shootTimer = 0.f;
+        shoot();
+        shotFired = true;
     }
 
-    // 3. XỬ LÝ INPUT DI CHUYỂN (Code cũ của bạn)
     float moveDir = 0.f;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         moveDir -= 1.f;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         moveDir += 1.f;
 
-    // 4. DI CHUYỂN TÀU (Code cũ)
-    mSprite.move(moveDir * mMoveSpeed * deltaTime, 0.f);
+    // (DÙNG TÊN "sprite" VÀ "speed" CỦA BẠN)
+    sprite.move(moveDir * speed * deltaTime, 0.f);
 
-    // 5. GIỚI HẠN TÀU TRONG MÀN HÌNH (Code cũ)
-    sf::FloatRect bounds = mSprite.getGlobalBounds();
+    // --- "HỆ THỐNG RANH GIỚI" (BOUNDARY SYSTEM) (ĐÂY LÀ "BẢN VÁ") ---
+    sf::FloatRect bounds = sprite.getGlobalBounds();
     if (bounds.left < 0.f)
-        mSprite.setPosition(0.f, mSprite.getPosition().y);
+        sprite.setPosition(0.f, sprite.getPosition().y);
     else if (bounds.left + bounds.width > windowWidth)
-        mSprite.setPosition(windowWidth - bounds.width, mSprite.getPosition().y);
+        sprite.setPosition(windowWidth - bounds.width, sprite.getPosition().y);
+    // --- KẾT THÚC "HỆ THỐNG RANH GIỚI" ---
 
-    return shotFired; // Báo cho "Nhạc trưởng" biết
+    return shotFired;
 }
 
-// --- PHÒNG BAN VẼ ---
-void Player::draw(sf::RenderWindow& window)
-{
-    window.draw(mSprite);
-}
-
-// --- HÀM TIỆN ÍCH ---
-void Player::upgradeGun()
-{
-    if (mGunLevel < 3)
-    {
-        mGunLevel++;
-    }
-}
-
-sf::FloatRect Player::getBounds() const
-{
-    return mSprite.getGlobalBounds();
-}
-
-sf::Vector2f Player::getPosition() const
-{
-    return mSprite.getPosition();
-}
-
-// --- TRIỂN KHAI CÁC HÀM HP MỚI ---
-void Player::takeDamage(int damage)
-{
-    mHp -= damage;
-    if (mHp < 0)
-    {
-        mHp = 0;
-    }
-}
-
-bool Player::isAlive() const
-{
-    return mHp > 0;
-}
-
-int Player::getHP() const
-{
-    return mHp;
-}
-
-// --- THÊM HÀM MỚI NÀY VÀO CUỐI FILE ---
+// 9. "Công thức" shoot (Đã "vá" 100%)
 void Player::shoot()
 {
-    sf::FloatRect bounds = mSprite.getGlobalBounds();
+    // (DÙNG TÊN "sprite" CỦA BẠN)
+    sf::FloatRect bounds = sprite.getGlobalBounds();
     sf::Vector2f shootPos(bounds.left + bounds.width / 2.f, bounds.top);
 
     if (mGunLevel == 1)
@@ -125,10 +86,22 @@ void Player::shoot()
         mPlayerBulletsRef.push_back(Bullet(mBulletTextureRef, { shootPos.x - 10.f, shootPos.y }, { 0.f, -1.f }, mBulletSpeed, 1));
         mPlayerBulletsRef.push_back(Bullet(mBulletTextureRef, { shootPos.x + 10.f, shootPos.y }, { 0.f, -1.f }, mBulletSpeed, 1));
     }
-    else // (Lvl 3 trở lên)
+    else
     {
         mPlayerBulletsRef.push_back(Bullet(mBulletTextureRef, shootPos, { 0.f, -1.f }, mBulletSpeed, 2));
         mPlayerBulletsRef.push_back(Bullet(mBulletTextureRef, { shootPos.x - 20.f, shootPos.y }, { -0.1f, -1.f }, mBulletSpeed, 1));
         mPlayerBulletsRef.push_back(Bullet(mBulletTextureRef, { shootPos.x + 20.f, shootPos.y }, { 0.1f, -1.f }, mBulletSpeed, 1));
     }
+}
+// --- THÊM "CÔNG THỨC" BỊ THIẾU NÀY VÀO CUỐI FILE ---
+void Player::resetPosition()
+{
+    // (Chúng ta CHƯA "thi công" mInitialPos,
+    //  nên tạm thời để nó reset về giữa màn hình)
+
+    // (DÙNG TÊN "sprite" CỦA BẠN)
+    sf::FloatRect bounds = sprite.getGlobalBounds();
+    float posX = (800.f - bounds.width) / 2.f;
+    float posY = 600.f - bounds.height - 50.f;
+    sprite.setPosition(posX, posY);
 }
