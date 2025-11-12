@@ -1,52 +1,39 @@
-﻿#pragma once
-#include <SFML/Graphics.hpp>
+#pragma once
 #include <vector>
 #include "Bullet.h"
+#include "Entity.h"
 
-class EnemyBase
+// --- "NÂNG" 2 ENUM RA NGOÀI (Sửa lỗi C2039) ---
+enum class AIState { Entering, Attacking };
+enum LootType { None, UpgradeGun };
+
+// "Kế thừa" (inherit) từ "Entity"
+class EnemyBase : public Entity
 {
 public:
-    // Trạng thái AI (Thêm ở Bước 4A)
-    enum class AIState { Entering, Attacking };
-    enum LootType { None, UpgradeGun };
-
-    sf::Sprite sprite;
-    int hp;
-    float speed;
+    // (Biến "public" "riêng")
     LootType dropType;
-    int scoreValue; // Quái này đáng giá bao nhiêu điểm?
+    int scoreValue;
 
-    // Constructor
+    // Hàm Dựng
     EnemyBase(int initialHp, float initialSpeed);
     virtual ~EnemyBase() = default;
 
-    // --- Hàm Chung ---
-    void takeDamage(int damage);
-    bool isAlive();
-
-    // --- Hàm "Ảo" (Virtual) ---
-    // (Bản 4 tham số, Thêm ở Bước 5)
+    // (Hàm "ảo" "riêng")
     virtual void update(float deltaTime, std::vector<Bullet>& enemyBullets,
         sf::Texture& enemyBulletTexture, float windowWidth);
-
     virtual void shoot(std::vector<Bullet>& enemyBullets,
         sf::Texture& enemyBulletTexture);
 
-    virtual void draw(sf::RenderWindow& window);
-
-    // Hàm set Waypoint (Thêm ở Bước 4A)
+    // (Hàm "riêng")
     void setWaypoint(sf::Vector2f waypoint);
 
-protected: // <-- Dùng protected
-    float mShootTimer;
-    float mShootCooldown;
-
-    // Biến AI (Thêm ở Bước 4A & 5)
+protected:
+    // (Biến "riêng")
     AIState mState;
-    sf::Vector2f mWaypoint;     // <-- Sửa lỗi E0135 (image_1b92bf)
+    sf::Vector2f mWaypoint;
     float mHorizontalDirection;
 
-    // Hàm Loot (Thêm ở Bước 7 - Sửa lỗi C3861)
+    // (Hàm "riêng")
     void setLoot(int chance);
-
-}; 
+};
