@@ -1,46 +1,30 @@
-﻿#pragma once
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "Bullet.h" // Player cần biết Bullet là gì
+#include "Bullet.h"
+#include "Entity.h" 
 
-class Player
+// 2. "Kế thừa" (inherit) từ "Entity"
+class Player : public Entity
 {
 public:
-    // Constructor
+    // Hàm Dựng (Truyền "chung" và "riêng")
     Player(sf::Texture& playerTexture, sf::Texture& bulletTexture,
         std::vector<Bullet>& bullets, float bulletSpeed);
-    // Các "phòng ban" của Player
-    void handleInput(sf::Event& event); // Xử lý sự kiện (bắn)
-    bool update(float deltaTime, float windowWidth); // Xử lý logic (di chuyển)
-    void draw(sf::RenderWindow& window);             // Vẽ
-
-    // --- CÁC HÀM MỚI ---
-    void takeDamage(int damage); // Hàm nhận sát thương
-    bool isAlive() const;        // Hàm kiểm tra còn sống
-    int getHP() const;           // (Tùy chọn) Hàm lấy HP cho UI sau này
-
-    // Các hàm tiện ích
+    virtual ~Player() = default; // (Hàm Hủy "Ảo")
+    void handleInput(sf::Event& event);
+    bool update(float deltaTime, float windowWidth); // (Hàm này "viết đè" (override))
     void upgradeGun();
-    sf::FloatRect getBounds() const;
-    sf::Vector2f getPosition() const;
-    void setInitialPosition(float x, float y);
+    void resetPosition();
 
 private:
-    // Dùng con trỏ tham chiếu (&) đến các tài nguyên
-    // mà "Game" sở hữu. Player không "sở hữu" chúng.
+    // (Hàm "riêng")
+    void shoot();
+    int mGunLevel;
+    float mBulletSpeed; // (Vẫn giữ "riêng" vì EnemyBase không cần)
+    sf::Vector2f mInitialPos;
+
+    // (Tham chiếu "riêng")
     sf::Texture& mBulletTextureRef;
     std::vector<Bullet>& mPlayerBulletsRef;
-
-    // Các biến Player tự "sở hữu"
-    sf::Sprite mSprite;
-    int mGunLevel;
-    float mMoveSpeed;
-    // --- BIẾN MỚI CHO HP ---
-    int mHp;
-    int mMaxHp;
-    // Auto shoot
-    float mShootTimer;
-    float mShootCooldown;
-    float mBulletSpeed;
-    void shoot();
 };
