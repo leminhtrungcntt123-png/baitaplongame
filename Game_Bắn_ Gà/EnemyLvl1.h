@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "EnemyBase.h" // Kế thừa từ Lớp Cha
 
 // Cú pháp ": public EnemyBase" nghĩa là "Kế thừa"
