@@ -1,7 +1,7 @@
 #include "GameOverState.h"
 #include "Game.h"
-#include "PlayingState.h"  // (Cần "include" (include) "để" (to) "biết" (know) "cách" (how) "CHƠI LẠI" (RETRY))
-#include "MainMenuState.h" // (Cần "include" (include) "để" (to) "biết" (know) "cách" (how) "VỀ MENU" (RETURN TO MENU))
+#include "PlayingState.h"  
+#include "MainMenuState.h" 
 
 // --- HÀM DỰNG (CONSTRUCTOR) CỦA CHUYÊN GIA GAME OVER ---
 GameOverState::GameOverState(Game* game) :
