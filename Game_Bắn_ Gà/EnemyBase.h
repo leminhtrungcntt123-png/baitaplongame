@@ -5,7 +5,7 @@
 
 // --- "NÂNG" 2 ENUM RA NGOÀI (Sửa lỗi C2039) ---
 enum class AIState { Entering, Attacking };
-enum LootType { None, UpgradeGun };
+enum LootType { None, UpgradeGun, MegaUpgrade};
 
 // "Kế thừa" (inherit) từ "Entity"
 class EnemyBase : public Entity
