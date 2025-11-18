@@ -1,7 +1,8 @@
 #pragma once
 #include "BaseState.h"
 #include <SFML/Graphics.hpp>
-#include "Game.h" 
+#include "Game.h" // (Cần "include" (include) "Game" (Game) "để" (to) "lấy" (get) "Font" (Font) "và" (and) "gọi" (call) "popState")
+
 // "Chuyên gia" (Specialist) "này" (this) "ký" (signs) "vào" (the) "Bản Hợp Đồng" (Contract) "BaseState" (BaseState)
 class PausedState : public BaseState
 {
