@@ -34,27 +34,37 @@ void CollisionManager::ProcessCollisions(std::vector<Bullet>& bullets,
 bool CollisionManager::ProcessPlayerCollisions(Player& player,
     std::vector<Powerup>& powerups)
 {
-    // Lấy hitbox Tàu (LÀ "ENTITY") -> Dùng .getBounds()
     sf::FloatRect playerBounds = player.getBounds();
 
     for (int i = powerups.size() - 1; i >= 0; i--)
     {
-        // Lấy hitbox Vật Phẩm (KHÔNG LÀ "ENTITY") -> Dùng .sprite.
         sf::FloatRect powerupBounds = powerups[i].sprite.getGlobalBounds();
 
         if (playerBounds.intersects(powerupBounds))
         {
+            // 1. Ăn đạn thường
             if (powerups[i].type == Powerup::UpgradeGun)
             {
                 player.upgradeGun();
             }
+            // 2. Ăn Mega (Biến hình)
+            else if (powerups[i].type == Powerup::MegaUpgrade)
+            {
+                player.megaUpgradeGun();
+            }
+            // --- [BẢN VÁ] 3. Ăn Máu (Hồi phục) ---
+            else if (powerups[i].type == Powerup::HealthPack)
+            {
+                player.heal(3); // Hồi 30 HP (Bạn có thể chỉnh số này tùy ý)
+            }
+
+            // Xóa vật phẩm sau khi ăn xong
             powerups.erase(powerups.begin() + i);
             return true;
         }
     }
     return false;
 }
-
 // --- HÀM 3: TÀU vs QUÁI / ĐẠN QUÁI ---
 void CollisionManager::ProcessPlayerHits(Player& player,
     std::vector<std::unique_ptr<EnemyBase>>& enemies,
