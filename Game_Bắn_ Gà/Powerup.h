@@ -1,11 +1,11 @@
-﻿#pragma once
+#pragma once
 #include <SFML/Graphics.hpp>
 
 class Powerup
 {
 public:
     // Loại vật phẩm (sau này có thể thêm Heal, Shield...)
-    enum PowerupType { UpgradeGun };
+    enum PowerupType { UpgradeGun, MegaUpgrade, HealthPack};
 
     sf::Sprite sprite;
     PowerupType type;
