@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "EnemyBase.h"
 
 // Lớp Boss "khổng lồ"
