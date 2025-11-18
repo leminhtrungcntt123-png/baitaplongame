@@ -24,7 +24,7 @@ void EnemyBase::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     if (shootTimer >= shootCooldown)
     {
         shootTimer = 0.f;
-        // "Ủy thác" (Delegate) "logic" (logic) "bắn" (shoot) "cho" (to) "Con" (Child) (Lvl1, Lvl2, Lvl3)
+        // "Ủy thác" (Delegate) "logic" (logic) "bắn" (shoot) "cho" (to) "Con" (Child)
         this->shoot(enemyBullets, enemyBulletTexture);
     }
 
@@ -49,15 +49,22 @@ void EnemyBase::update(float deltaTime, std::vector<Bullet>& enemyBullets,
 
         // --- "HỆ THỐNG RANH GIỚI" (BOUNDARY SYSTEM) (ĐÂY LÀ "BẢN VÁ") ---
         sf::FloatRect bounds = this->sprite.getGlobalBounds();
+
         if (bounds.left <= 0.f)
         {
+            // "LỆNH 1: GÀI" (Snap)
             this->sprite.setPosition(0.f, this->sprite.getPosition().y);
-            mHorizontalDirection = 1.f;
+
+            // "LỆNH 2: ĐỔI HƯỚNG" (Bounce) (DÒNG BỊ THIẾU CỦA BẠN NẰM Ở ĐÂY!)
+            mHorizontalDirection = 1.f; // (Ra lệnh: "Di chuyển sang Phải")
         }
         else if (bounds.left + bounds.width >= windowWidth)
         {
+            // "LỆNH 1: GÀI" (Snap)
             this->sprite.setPosition(windowWidth - bounds.width, this->sprite.getPosition().y);
-            mHorizontalDirection = -1.f;
+
+            // "LỆNH 2: ĐỔI HƯỚNG" (Bounce)
+            mHorizontalDirection = -1.f; // (Ra lệnh: "Di chuyển sang Trái")
         }
     }
 }
@@ -73,15 +80,6 @@ void EnemyBase::shoot(std::vector<Bullet>& enemyBullets,
 void EnemyBase::setWaypoint(sf::Vector2f waypoint)
 {
     mWaypoint = waypoint;
-    float newX = waypoint.x;
-    // DÙNG TÊN "CHA": "sprite"
-    sf::FloatRect bounds = sprite.getGlobalBounds();
-    if (newX < bounds.width / 2.f)
-        newX = bounds.width / 2.f;
-    else if (newX > 800.f - bounds.width / 2.f)
-        newX = 800.f - bounds.width / 2.f;
-
-    mWaypoint.x = newX;
 }
 
 void EnemyBase::setLoot(int chance)
