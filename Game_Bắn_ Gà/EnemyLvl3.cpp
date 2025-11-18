@@ -20,7 +20,6 @@ void EnemyLvl3::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     EnemyBase::update(deltaTime, enemyBullets, enemyBulletTexture, windowWidth);
 }
 
-// THÊM HÀM NÀY VÀO
 void EnemyLvl3::shoot(std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture)
 {
