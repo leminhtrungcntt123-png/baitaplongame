@@ -1,23 +1,18 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <memory>
-#include "Bullet.h"
-#include "EnemyBase.h" // (Các include phải đúng)
-#include "Powerup.h"
-#include "Player.h"
-#include <SFML/Audio.hpp>
-#include "Explosion.h"
-#include "WaveManager.h" // (Phải có WaveManager.h)
+#include <stack>
+#include "Bullet.h" 
+#include "Explosion.h" 
+#include "BaseState.h"
 
-
-enum class GameState
+enum class Difficulty
 {
-    MainMenu, // (Thêm ở Bước 7 Mới)
-    Playing,
-    Paused,
-    GameOver,
-    Won
+    Easy,   // Dễ
+    Normal, // Thường
+    Hard    // Khó
 };
 
 class Game
@@ -26,42 +21,41 @@ public:
     Game();
     void run();
 
-private:
-    // --- Hàm "Phòng Ban" (Refactor) ---
-    void processInput();
-    void update(float deltaTime);
-    void render();
-    void loadAssets();
-    void updatePlayer(float deltaTime);
-    void updateBullets(float deltaTime);
-    void updateCollisions();
-    void updateEntities(float deltaTime);
-    void checkGameState();
-    void updateHUD(); // Cập nhật HP và Score
-    void updateView();
+    // --- "HÀM QUẢN LÝ" (MANAGER FUNCTIONS) "MỚI" (NEW) ---
+    void pushState(std::unique_ptr<BaseState> state);
+    void popState();
+    void changeState(std::unique_ptr<BaseState> state);
+    BaseState* getCurrentState(); // (Lấy "Chuyên gia" (Specialist) "hiện tại" (current))
 
-    // --- Biến SFML ---
+    // --- "TÚI ĐỒ" (PUBLIC ASSETS) (CHO "CHUYÊN GIA" (SPECIALISTS) "SỬ DỤNG" (TO USE)) ---
+    // (Tất cả "Tài Sản" (Assets) "bây giờ" (now) "là" (are) "public" (public) "để" (for) "các" (the) "State" (States) "lấy" (to get))
+
     sf::RenderWindow mWindow;
-    sf::Clock mDeltaClock;
 
     // --- Textures ---
     sf::Texture mPlayerTexture;
     sf::Texture mBulletTexture;
     sf::Texture mEnemy1Texture;
     sf::Texture mEnemy3Texture;
-    sf::Texture mEnemy2Texture; // (Thêm ở Bước 9)
-    sf::Texture mBossTexture;   // (Thêm ở Bước 9)
+    sf::Texture mEnemy2Texture;
+    sf::Texture mBossTexture;
     sf::Texture mPowerupTexture;
     sf::Texture mBackgroundTexture;
+    sf::Texture mSelectModeTexture;
     sf::Texture mEnemyBulletTexture;
-    // Chỉnh giao diện ở menu
-    sf::Texture mBossBulletTexture; // Cho BulletBoss.png
-    sf::Texture mMenuBackgroundTexture;  // giao diện background
-    sf::Sprite  mMenuBackgroundSprite;
-    sf::Texture mTitleTexture;              // title của game
-    sf::Sprite  mTitleSprite;
-    sf::Texture mPlayButtonTexture;         // nút play của game
-    sf::Sprite  mPlayButtonSprite;
+    sf::Texture mBossBulletTexture;
+    sf::Texture mMenuBackgroundTexture;
+    sf::Texture mTitleTexture;
+    sf::Texture mPlayButtonTexture;
+    sf::Texture mPauseButtonTexture;
+    sf::Texture mPlayerVIPTexture;
+    sf::Texture mBulletPlayerVIPTexture;
+    sf::Texture mItemChangePlayerTexture;
+    sf::Texture mMeteoriteTexture;
+    sf::Texture mItemBuffHPTexture;
+
+    // --- 2. BIẾN LƯU LỰA CHỌN ---
+    Difficulty mDifficulty;
 
     // --- Âm thanh ---
     sf::SoundBuffer mShootBuffer;
@@ -71,41 +65,20 @@ private:
     sf::Sound mExplosionSound;
     sf::Sound mPowerupSound;
 
-    // --- Đối tượng Game ---
-    std::unique_ptr<Player> mPlayer;
-    sf::Sprite mBackgroundSprite;   // background cho play_game
-    std::vector<Bullet> mPlayerBullets;
-    std::vector<Bullet> mEnemyBullets;
-    std::vector<std::unique_ptr<EnemyBase>> mEnemies;
-    std::vector<Powerup> mPowerups;
-    std::vector<Explosion> mExplosions;
-    WaveManager mWaveManager; // (Thêm ở Bước 4B)
-
-    // --- Trạng thái Game ---
-    float mBulletSpeed;
-    GameState mGameState;
-
     // --- Giao Diện (UI) ---
     sf::Font mFont;
-    sf::Text mWinText;
-    sf::Text mGameOverText;
-    // Tạo nút pause trong game play
-    sf::Texture mPauseButtonTexture; // Texture cho nút "||"
-    sf::Sprite  mPauseButtonSprite;  // Sprite cho nút "||"
 
-    sf::RectangleShape mPauseOverlay; // Lớp "phủ mờ" (dim overlay)
+private:
+    // --- "HÀM" (FUNCTIONS) "PHÒNG BAN" (DEPARTMENT) "GỌN GÀNG" (CLEAN) ---
+    void processInput();
+    void update(float deltaTime);
+    void render();
+    void loadAssets();
+    void updateView(); // (Giữ lại "hàm" (function) "sửa lỗi" (bug fix) "Letterbox" (Letterbox))
 
-    sf::Text mPauseResumeButton; // Chữ "CHƠI TIẾP"
-    sf::Text mPauseExitButton;   // Chữ "THOÁT"
+    // --- "BIẾN" (VARIABLES) "HỆ THỐNG" (SYSTEM) ---
+    sf::Clock mDeltaClock;
 
-    // (Thêm ở Bước 8)
-    sf::Text mWaveNotifyText; 
-    sf::Text mPlayerHPText;   
-    // --- THÊM "TÚI" MỚI CHO HP BAR ---
-    sf::RectangleShape mHpBarBackground; // "Nền" (ví dụ: màu xám)
-    sf::RectangleShape mHpBarForeground;
+    std::stack<std::unique_ptr<BaseState>> mStates;
 
-    // Điểm 
-    int mScore;           // Biến lưu điểm
-    sf::Text mScoreText;  // Biến hiển thị điểm
-}; 
+};
