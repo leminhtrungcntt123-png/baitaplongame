@@ -18,6 +18,7 @@ public:
     void takeDamage(int damage);
     // 2. Trạng thái
     bool isAlive();
+    sf::Vector2f getCenterPosition() const;
 
     void draw(sf::RenderWindow& window);
     sf::FloatRect getBounds();
@@ -25,13 +26,14 @@ public:
     void setInitialPosition(float x, float y);
     // 7. Lấy hp
     int getHP();
+    int getMaxHP() const;
 
 protected: // <-- Dùng "protected" để Lớp Con (Player, EnemyBase) "thấy" được
-
     // --- CÁC BIẾN "CHUNG" (Lấy từ Player/EnemyBase) ---
     sf::Sprite sprite; // (Player dùng "mSprite", Enemy dùng "sprite")
     int Hp;            // (Player dùng "mHp", Enemy dùng "hp")
     float speed;       // (Player dùng "mMoveSpeed", Enemy dùng "speed")
+    int mMaxHp;        //hp boss
 
     float shootTimer;
     float shootCooldown;
