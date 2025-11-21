@@ -7,24 +7,25 @@
 class GameOverState : public BaseState
 {
 public:
-    GameOverState(Game* game); // "Hàm Dựng" (Constructor)
+    GameOverState(sf::Texture &loseBackgroundTexture,Game *game); // "Hàm Dựng" (Constructor)
 
     // --- "THI CÔNG" (IMPLEMENT) "3" (THREE) "ĐIỀU KHOẢN" (CLAUSES) "HỢP ĐỒNG" (CONTRACT) ---
-    virtual void processInput(sf::Event& event) override;
+    virtual void processInput(sf::Event &event) override;
     virtual void update(float deltaTime) override;
-    virtual void render(sf::RenderWindow& window) override;
+    virtual void render(sf::RenderWindow &window) override;
 
 private:
     // --- "NHÀ KHO RIÊNG" (PRIVATE STORAGE) ---
 
-    // (Con trỏ "tới" (to) "Tài Sản" (Assets) "chung" (global))
-    sf::Font& mFont;
+    sf::Font &mFont;
 
-    // (Các "Đối tượng" (Objects) "UI" (UI) "cụ thể" (specific))
-    sf::RectangleShape mOverlay;      // Lớp "phủ mờ" (dim overlay)
-    sf::Text mGameOverText; // Chữ "GAME OVER"
+    // --- THÊM MỚI VÀO ĐÂY ---
+    sf::Texture mLoseBackgroundTexture;
+    sf::Sprite mBackgroundSprite; // (Dữ liệu ảnh - Phải nằm ở đây để sống lâu)  // (Khung tranh để vẽ ảnh lên màn hình)
+    // ------------------------
 
-    // (Các "nút" (buttons) "mới" (new) "của" (of) "bạn" (your))
-    sf::Text mRetryButton;  // Chữ "CHOI LAI"
-    sf::Text mMenuButton;   // Chữ "MENU"
+    sf::RectangleShape mOverlay;
+    sf::Text mGameOverText;
+    sf::Text mRetryButton;
+    sf::Text mMenuButton;
 };
