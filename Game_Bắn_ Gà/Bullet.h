@@ -9,7 +9,7 @@ public:
     // --- HÀM DỰNG MỚI (NÂNG CẤP) ---
     // Giờ đây nó nhận Hướng bay, Tốc độ, và Sát thương
     Bullet(sf::Texture& texture, sf::Vector2f startPosition,
-        sf::Vector2f direction, float speed, int damage);
+        sf::Vector2f direction, float speed, int ,sf::Vector2f(size));
 
     void update(float deltaTime);
 
