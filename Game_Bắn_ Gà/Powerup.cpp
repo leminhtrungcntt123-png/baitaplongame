@@ -1,4 +1,4 @@
-#include "Powerup.h"
+#include "../header/Powerup.h"
 
 Powerup::Powerup(sf::Texture& texture, sf::Vector2f position, PowerupType type)
 {
