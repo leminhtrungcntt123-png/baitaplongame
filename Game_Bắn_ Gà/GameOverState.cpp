@@ -1,51 +1,72 @@
-#include "GameOverState.h"
-#include "Game.h"
-#include "PlayingState.h"  
-#include "MainMenuState.h" 
+#include "../header/GameOverState.h"
+#include "../header/Game.h"
+#include "../header/PlayingState.h"
+#include "../header/MainMenuState.h"
 
 // --- HÀM DỰNG (CONSTRUCTOR) CỦA CHUYÊN GIA GAME OVER ---
-GameOverState::GameOverState(Game* game) :
-    BaseState(game),     // 1. "Kết nối" (Connect) "Hợp đồng" (Contract)
-    mFont(game->mFont)   // 2. "Kết nối" (Connect) "Tài Sản" (Assets) "Font" (Font)
+GameOverState::GameOverState(sf::Texture &loseBackgroundTexture, Game *game)
+    : BaseState(game),
+      mFont(game->mFont)
 {
-    // 3. "THI CÔNG" (IMPLEMENT) "SETUP" (SETUP) "UI" (UI)
-    // 3a. Setup Lớp Phủ Mờ
+    // --- 1. SETUP BACKGROUND ---
+
+    // Bước quan trọng: Copy dữ liệu từ tham số truyền vào (loseBackgroundTexture)
+    // sang biến "nhà kho" của riêng class này (mLoseBackgroundTexture)
+    // để đảm bảo ảnh không bị mất khi ra khỏi hàm.
+    mLoseBackgroundTexture = loseBackgroundTexture;
+
+    // Gán Texture của riêng mình vào khung tranh (Sprite)
+    mBackgroundSprite.setTexture(mLoseBackgroundTexture);
+
+    // Co giãn ảnh cho vừa màn hình (Scale)
+    sf::Vector2u textureSize = mLoseBackgroundTexture.getSize();
+    sf::Vector2u windowSize = mGame->mWindow.getSize();
+
+    float scaleX = (float)windowSize.x / textureSize.x;
+    float scaleY = (float)windowSize.y / textureSize.y;
+    mBackgroundSprite.setScale(scaleX, scaleY);
+
+    // --- 2. SETUP LỚP PHỦ MỜ ---
     mOverlay.setSize(sf::Vector2f(800.f, 600.f));
     mOverlay.setFillColor(sf::Color(0, 0, 0, 150));
 
-    // 3b. Setup Chữ "GAME OVER"
+    // --- 3. SETUP UI (CHỮ VÀ NÚT) ---
+
+    // Chữ GAME OVER
     mGameOverText.setFont(mFont);
     mGameOverText.setString("GAME OVER");
     mGameOverText.setCharacterSize(64);
     mGameOverText.setFillColor(sf::Color::Red);
     sf::FloatRect loseBounds = mGameOverText.getLocalBounds();
     mGameOverText.setOrigin(loseBounds.left + loseBounds.width / 2.f,
-        loseBounds.top + loseBounds.height / 2.f);
-    mGameOverText.setPosition(800.f / 2.f, 600.f / 2.f - 100.f); // (Đẩy "lên" (up) "cao" (high) "một chút" (a bit))
+                            loseBounds.top + loseBounds.height / 2.f);
+    mGameOverText.setPosition(800.f / 2.f, 600.f / 2.f - 100.f);
 
-    // 3c. Setup Nút "CHƠI LẠI" (Retry) MỚI
+    // Nút RETRY
     mRetryButton.setFont(mFont);
     mRetryButton.setString("RETRY");
     mRetryButton.setCharacterSize(40);
     mRetryButton.setFillColor(sf::Color::White);
     sf::FloatRect retryBounds = mRetryButton.getLocalBounds();
     mRetryButton.setOrigin(retryBounds.left + retryBounds.width / 2.f,
-        retryBounds.top + retryBounds.height / 2.f);
-    mRetryButton.setPosition(800.f / 2.f, 600.f / 2.f + 0.f); // (Ở "giữa" (center))
+                           retryBounds.top + retryBounds.height / 2.f);
+    mRetryButton.setPosition(800.f / 2.f, 600.f / 2.f + 0.f);
 
-    // 3d. Setup Nút "MENU" MỚI
+    // Nút MENU
     mMenuButton.setFont(mFont);
     mMenuButton.setString("MENU");
     mMenuButton.setCharacterSize(40);
     mMenuButton.setFillColor(sf::Color::White);
     sf::FloatRect menuBounds = mMenuButton.getLocalBounds();
     mMenuButton.setOrigin(menuBounds.left + menuBounds.width / 2.f,
-        menuBounds.top + menuBounds.height / 2.f);
-    mMenuButton.setPosition(800.f / 2.f, 600.f / 2.f + 70.f); // (Ở "dưới" (below) "nút" (button) "Retry" (Retry))
+                          menuBounds.top + menuBounds.height / 2.f);
+    mMenuButton.setPosition(800.f / 2.f, 600.f / 2.f + 70.f);
 }
 
+// --- CÁC HÀM BÊN DƯỚI GIỮ NGUYÊN ---
+
 // --- "ĐIỀU KHOẢN 1" (CLAUSE 1): PROCESSINPUT ---
-void GameOverState::processInput(sf::Event& event)
+void GameOverState::processInput(sf::Event &event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
@@ -69,7 +90,6 @@ void GameOverState::processInput(sf::Event& event)
     }
 }
 
-
 // --- "ĐIỀU KHOẢN 2" (CLAUSE 2): UPDATE ---
 void GameOverState::update(float deltaTime)
 {
@@ -90,12 +110,18 @@ void GameOverState::update(float deltaTime)
 }
 
 // --- "ĐIỀU KHOẢN 3" (CLAUSE 3): RENDER ---
-void GameOverState::render(sf::RenderWindow& window)
+void GameOverState::render(sf::RenderWindow &window)
 {
     window.setView(window.getDefaultView());
 
-    window.draw(mOverlay);      // 1. Vẽ Lớp Phủ Mờ (để "tạo" (create) "nền" (background) "tối" (dark))
-    window.draw(mGameOverText); // 2. Vẽ Chữ "GAME OVER"
-    window.draw(mRetryButton);  // 3. Vẽ Nút "Chơi Lại"
-    window.draw(mMenuButton);   // 4. Vẽ Nút "Menu"
+    // 1. Vẽ Background Hình Ảnh (Vẽ đầu tiên để nó nằm dưới cùng)
+    window.draw(mBackgroundSprite);
+
+    // 2. Vẽ Lớp Phủ Mờ (Đè lên hình nền để làm tối hình nền đi một chút -> Nổi bật chữ)
+    window.draw(mOverlay);
+
+    // 3. Vẽ Chữ và Nút (Nằm trên cùng)
+    window.draw(mGameOverText);
+    window.draw(mRetryButton);
+    window.draw(mMenuButton);
 }
