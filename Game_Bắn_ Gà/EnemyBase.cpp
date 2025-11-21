@@ -1,4 +1,5 @@
-#include "EnemyBase.h"
+#include "../header/EnemyBase.h"
+#include <cmath>
 
 // 1. "Kết nối" Móng (gọi Entity)
 EnemyBase::EnemyBase(int initialHp, float initialSpeed)
