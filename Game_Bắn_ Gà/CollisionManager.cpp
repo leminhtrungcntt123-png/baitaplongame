@@ -1,7 +1,7 @@
-#include "CollisionManager.h"
+#include "../header/CollisionManager.h"
 #include <SFML/Graphics.hpp>
-#include "Powerup.h"
-#include "Player.h"
+#include "../header/Powerup.h"
+#include "../header/Player.h"
 
 // --- HÀM 1: ĐẠN TÀU vs QUÁI ---
 void CollisionManager::ProcessCollisions(std::vector<Bullet>& bullets,
