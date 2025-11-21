@@ -1,5 +1,5 @@
-#include "PausedState.h"
-#include "Game.h" // (Cần "Game" (Game) "để" (to) "lấy" (get) "Font" (Font) "và" (and) "Window" (Window))
+#include "../header/PausedState.h"
+#include "../header/Game.h" // (Cần "Game" (Game) "để" (to) "lấy" (get) "Font" (Font) "và" (and) "Window" (Window))
 
 // --- HÀM DỰNG (CONSTRUCTOR) CỦA CHUYÊN GIA PAUSE ---
 PausedState::PausedState(Game* game) :
