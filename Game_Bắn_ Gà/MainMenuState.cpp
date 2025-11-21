@@ -1,7 +1,7 @@
-#include "MainMenuState.h"
-#include "Game.h"
-#include "PlayingState.h" 
-#include "DifficultyState.h"
+#include "../header/MainMenuState.h"
+#include "../header/Game.h"
+#include "../header/PlayingState.h" 
+#include "../header/DifficultyState.h"
 
 // --- HÀM DỰNG (CONSTRUCTOR) CỦA CHUYÊN GIA MENU ---
 MainMenuState::MainMenuState(Game* game) :
