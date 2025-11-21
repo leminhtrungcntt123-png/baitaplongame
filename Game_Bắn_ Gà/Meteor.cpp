@@ -1,6 +1,6 @@
-#include "Meteor.h"
+#include "../header/Meteor.h"
 #include <vector> 
-#include "Bullet.h" 
+#include "../header/Bullet.h" 
 
 // --- HÀM DỰNG (CONSTRUCTOR) CỦA THIÊN THẠCH ---
 Meteor::Meteor(sf::Texture& texture, sf::Vector2f position) :
