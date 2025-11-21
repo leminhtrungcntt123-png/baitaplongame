@@ -1,8 +1,8 @@
-#include "Bullet.h"
+#include "../header/Bullet.h"
 
 // --- TRIỂN KHAI HÀM DỰNG MỚI ---
-Bullet::Bullet(sf::Texture& texture, sf::Vector2f startPosition,
-    sf::Vector2f direction, float speed, int damage)
+Bullet::Bullet(sf::Texture &texture, sf::Vector2f startPosition,
+               sf::Vector2f direction, float speed, int damage, sf::Vector2f(size))
 {
     // Gán các thuộc tính
     this->mDirection = direction;
@@ -11,7 +11,7 @@ Bullet::Bullet(sf::Texture& texture, sf::Vector2f startPosition,
 
     // Thiết lập hình ảnh
     this->sprite.setTexture(texture);
-    this->sprite.setScale(0.8f, 0.8f); // (Bạn có thể chỉnh lại scale)
+    this->sprite.setScale(size); // (Bạn có thể chỉnh lại scale)
 
     // Căn giữa viên đạn tại vị trí bắn
     sf::FloatRect bounds = this->sprite.getLocalBounds();
@@ -31,7 +31,7 @@ int Bullet::getDamage() const
 {
     return this->mDamage;
 }
-void Bullet::draw(sf::RenderWindow& window)
+void Bullet::draw(sf::RenderWindow &window)
 {
     window.draw(this->sprite);
 }
