@@ -4,8 +4,8 @@
 #include <vector>
 #include <memory>
 #include <stack>
-#include "Bullet.h" 
-#include "Explosion.h" 
+#include "Bullet.h"
+#include "Explosion.h"
 #include "BaseState.h"
 
 enum class Difficulty
@@ -25,7 +25,7 @@ public:
     void pushState(std::unique_ptr<BaseState> state);
     void popState();
     void changeState(std::unique_ptr<BaseState> state);
-    BaseState* getCurrentState(); // (Lấy "Chuyên gia" (Specialist) "hiện tại" (current))
+    BaseState *getCurrentState(); // (Lấy "Chuyên gia" (Specialist) "hiện tại" (current))
 
     // --- "TÚI ĐỒ" (PUBLIC ASSETS) (CHO "CHUYÊN GIA" (SPECIALISTS) "SỬ DỤNG" (TO USE)) ---
     // (Tất cả "Tài Sản" (Assets) "bây giờ" (now) "là" (are) "public" (public) "để" (for) "các" (the) "State" (States) "lấy" (to get))
@@ -48,12 +48,14 @@ public:
     sf::Texture mTitleTexture;
     sf::Texture mPlayButtonTexture;
     sf::Texture mPauseButtonTexture;
+    
     sf::Texture mPlayerVIPTexture;
     sf::Texture mBulletPlayerVIPTexture;
     sf::Texture mItemChangePlayerTexture;
     sf::Texture mMeteoriteTexture;
     sf::Texture mItemBuffHPTexture;
-
+    sf::Texture mLoseBackground;
+    sf::Texture mWonBackground;
     // --- 2. BIẾN LƯU LỰA CHỌN ---
     Difficulty mDifficulty;
 
@@ -67,6 +69,7 @@ public:
 
     // --- Giao Diện (UI) ---
     sf::Font mFont;
+    bool mFontLoaded = true;
 
 private:
     // --- "HÀM" (FUNCTIONS) "PHÒNG BAN" (DEPARTMENT) "GỌN GÀNG" (CLEAN) ---
@@ -80,5 +83,4 @@ private:
     sf::Clock mDeltaClock;
 
     std::stack<std::unique_ptr<BaseState>> mStates;
-
 };
