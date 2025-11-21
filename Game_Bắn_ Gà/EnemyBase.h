@@ -2,10 +2,19 @@
 #include <vector>
 #include "Bullet.h"
 #include "Entity.h"
-
+#include "Animation.h"
 // --- "NÂNG" 2 ENUM RA NGOÀI (Sửa lỗi C2039) ---
-enum class AIState { Entering, Attacking };
-enum LootType { None, UpgradeGun, MegaUpgrade};
+enum class AIState
+{
+    Entering,
+    Attacking
+};
+enum LootType
+{
+    None,
+    UpgradeGun,
+    MegaUpgrade
+};
 
 // "Kế thừa" (inherit) từ "Entity"
 class EnemyBase : public Entity
@@ -20,10 +29,10 @@ public:
     virtual ~EnemyBase() = default;
 
     // (Hàm "ảo" "riêng")
-    virtual void update(float deltaTime, std::vector<Bullet>& enemyBullets,
-        sf::Texture& enemyBulletTexture, float windowWidth);
-    virtual void shoot(std::vector<Bullet>& enemyBullets,
-        sf::Texture& enemyBulletTexture);
+    virtual void update(float deltaTime, std::vector<Bullet> &enemyBullets,
+                        sf::Texture &enemyBulletTexture, float windowWidth);
+    virtual void shoot(std::vector<Bullet> &enemyBullets,
+                       sf::Texture &enemyBulletTexture);
 
     // (Hàm "riêng")
     void setWaypoint(sf::Vector2f waypoint);
