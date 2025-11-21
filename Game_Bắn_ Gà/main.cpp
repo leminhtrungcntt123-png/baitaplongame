@@ -1,4 +1,4 @@
-#include "Game.h"      // Chỉ cần include Cỗ máy game
+#include "../header/Game.h"      // Chỉ cần include Cỗ máy game
 #include <iostream>    // Cho std::cerr
 #include <stdexcept>   // Cho std::runtime_error
 #include <ctime>       // Cho time()
