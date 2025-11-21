@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-g",
+        "${workspaceFolder}/source/Boss.cpp",
+        "${workspaceFolder}/source/Bullet.cpp",
+        "${workspaceFolder}/source/CollisionManager.cpp",
+        "${workspaceFolder}/source/DifficultyState.cpp",
+        "${workspaceFolder}/source/EnemyBase.cpp",
+        "${workspaceFolder}/source/EnemyLvl1.cpp",
+        "${workspaceFolder}/source/EnemyLvl2.cpp",
+        "${workspaceFolder}/source/EnemyLvl3.cpp",
+        "${workspaceFolder}/source/Entity.cpp",
+        "${workspaceFolder}/source/Explosion.cpp",
+        "${workspaceFolder}/source/Game.cpp",
+        "${workspaceFolder}/source/GameOverState.cpp",
+        "${workspaceFolder}/source/main.cpp",
+        "${workspaceFolder}/source/MainMenuState.cpp",
+        "${workspaceFolder}/source/Meteor.cpp",
+        "${workspaceFolder}/source/PausedState.cpp",
+        "${workspaceFolder}/source/Player.cpp",
+        "${workspaceFolder}/source/PlayingState.cpp",
+        "${workspaceFolder}/source/Powerup.cpp",
+        "${workspaceFolder}/source/WaveManager.cpp",
+        "${workspaceFolder}/source/WonState.cpp",
+        "${workspaceFolder}/source/Animation.cpp",
+        "-I", "C:/SFML/include",
+        "-L", "C:/SFML/lib",
+        "-lsfml-graphics",
+        "-lsfml-window",
+        "-lsfml-system",
+        "-lsfml-audio",
+        "-o",
+        "${workspaceFolder}/main.exe"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
