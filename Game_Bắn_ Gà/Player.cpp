@@ -1,35 +1,35 @@
-#include "Player.h"
+#include "../header/Player.h"
 
 // 1. "Thi công" Hàm Dựng MỚI
 // --- "THAY THẾ" (REPLACE) "TOÀN BỘ" (THE ENTIRE) "HÀM DỰNG" (CONSTRUCTOR) "CŨ" (OLD) ---
-Player::Player(sf::Texture& playerTexture, sf::Texture& bulletTexture,
-    std::vector<Bullet>& bullets, float bulletSpeed,
-    sf::Texture& playerVIPTexture, sf::Texture& bulletVIPTexture) // <-- (Thêm 2 "tham số" (parameters) "mới" (new))
+Player::Player(sf::Texture &playerTexture, sf::Texture &bulletTexture,
+               std::vector<Bullet> &bullets, float bulletSpeed,
+               sf::Texture &playerVIPTexture, sf::Texture &bulletVIPTexture) // <-- (Thêm 2 "tham số" (parameters) "mới" (new))
 
     // 2. "Kết nối" Móng (Entity)
     : Entity(20, 400.f),
 
-    // 3. Khởi tạo biến "RIÊNG" (Cũ)
-    mBulletTextureRef(bulletTexture),
-    mPlayerBulletsRef(bullets),
-    mGunLevel(1),
-    mBulletSpeed(bulletSpeed),
-    mHorizontalSpeed(0.f),
-    mVerticalSpeed(0.f),
+      // 3. Khởi tạo biến "RIÊNG" (Cũ)
+      mBulletTextureRef(bulletTexture),
+      mPlayerBulletsRef(bullets),
+      mGunLevel(1),
+      mBulletSpeed(bulletSpeed),
+      mHorizontalSpeed(0.f),
+      mVerticalSpeed(0.f),
 
-    // 4. "VÁ" (PATCH): "Kết nối" (Connect) "các" (the) "biến" (variables) "VIP" (VIP) "mới" (new)
-    mPlayerVIPTextureRef(playerVIPTexture),
-    mBulletPlayerVIPTextureRef(bulletVIPTexture),
-    mIsUpgraded(false) // (Bắt đầu "ở" (at) "trạng thái" (state) "chưa" (not) "nâng cấp" (upgraded))
+      // 4. "VÁ" (PATCH): "Kết nối" (Connect) "các" (the) "biến" (variables) "VIP" (VIP) "mới" (new)
+      mPlayerVIPTextureRef(playerVIPTexture),
+      mBulletPlayerVIPTextureRef(bulletVIPTexture),
+      mIsUpgraded(false) // (Bắt đầu "ở" (at) "trạng thái" (state) "chưa" (not) "nâng cấp" (upgraded))
 {
     // (Phần code "setup" (setup) "bên trong" (inside) "{ }" "giữ nguyên" (remains the same))
     this->sprite.setTexture(playerTexture);
-    this->sprite.setScale(1.0f, 1.0f);
+    this->sprite.setScale(1.f, 1.f);
     this->shootCooldown = 0.5f;
     this->shootTimer = 0.5f;
 }
 
-void Player::handleInput(sf::Event& event)
+void Player::handleInput(sf::Event &event)
 {
     // (Bây giờ "nó" (it) "sẽ" (will) "sử dụng" (use) "các" (the) "biến" (variables) "mới" (new) "mHorizontalSpeed/mVerticalSpeed")
     if (event.type == sf::Event::KeyPressed)
@@ -57,16 +57,20 @@ void Player::handleInput(sf::Event& event)
         switch (event.key.code)
         {
         case sf::Keyboard::Left: // Trái
-            if (mHorizontalSpeed < 0) mHorizontalSpeed = 0.f;
+            if (mHorizontalSpeed < 0)
+                mHorizontalSpeed = 0.f;
             break;
         case sf::Keyboard::Right: // Phải
-            if (mHorizontalSpeed > 0) mHorizontalSpeed = 0.f;
+            if (mHorizontalSpeed > 0)
+                mHorizontalSpeed = 0.f;
             break;
         case sf::Keyboard::Up: // Lên (MỚI)
-            if (mVerticalSpeed < 0) mVerticalSpeed = 0.f;
+            if (mVerticalSpeed < 0)
+                mVerticalSpeed = 0.f;
             break;
         case sf::Keyboard::Down: // Xuống (MỚI)
-            if (mVerticalSpeed > 0) mVerticalSpeed = 0.f;
+            if (mVerticalSpeed > 0)
+                mVerticalSpeed = 0.f;
             break;
         default:
             break;
@@ -83,11 +87,10 @@ void Player::upgradeGun()
 // "THAY THẾ" (REPLACE) "TOÀN BỘ" (THE ENTIRE) "HÀM" (FUNCTION) "update" (update) "CŨ" (OLD)
 bool Player::update(float deltaTime, float windowWidth)
 {
-    // --- 1. "VÁ" (PATCH): SỬA LOGIC DI CHUYỂN ---
-    this->sprite.move(mHorizontalSpeed * this->speed * deltaTime,
-        mVerticalSpeed * this->speed * deltaTime);
+    // --- 1. LOGIC DI CHUYỂN ---
+    this->sprite.move(mHorizontalSpeed * this->speed * deltaTime, mVerticalSpeed * this->speed * deltaTime);
 
-    // --- 2. LOGIC RANH GIỚI (BẢN VÁ CHỐNG LAG GÓC) ---
+    // --- 2. LOGIC RANH GIỚI ---
     // Lấy vị trí hiện tại
     sf::Vector2f pos = this->sprite.getPosition();
     // Lấy kích thước tàu
@@ -121,11 +124,11 @@ bool Player::update(float deltaTime, float windowWidth)
     return shotFired; // (Báo "không" (has not) "bắn" (shot))
 }
 
-// 9. "Công thức" shoot (Đã "vá" 100%)
+// 9. "Công thức" shoot
 void Player::shoot()
 {
     // 1. "VÁ" (PATCH): "Chọn" (Choose) "Texture" (Texture) "đạn" (bullet) "phù hợp" (correct)
-    sf::Texture& currentBulletTexture = mIsUpgraded ? mBulletPlayerVIPTextureRef : mBulletTextureRef;
+    sf::Texture &currentBulletTexture = mIsUpgraded ? mBulletPlayerVIPTextureRef : mBulletTextureRef;
 
     // 2. "Lấy" (Get) "vị trí" (position) "trung tâm" (center) (Tối ưu hóa "code" (code) "cũ" (old))
     sf::Vector2f centerPos = this->getCenterPosition();
@@ -134,27 +137,27 @@ void Player::shoot()
     switch (mGunLevel)
     {
     case 1:
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { 0.f, -1.f }, mBulletSpeed, 1));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {0.f, -1.f}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
         break;
     case 2:
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos + sf::Vector2f(-15.f, 0.f), { 0.f, -1.f }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos + sf::Vector2f(15.f, 0.f), { 0.f, -1.f }, mBulletSpeed, 1));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos + sf::Vector2f(-15.f, 0.f), {0.f, -1.f}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos + sf::Vector2f(15.f, 0.f), {0.f, -1.f}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
         break;
     case 3:
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { 0.f, -1.f }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos + sf::Vector2f(-15.f, 0.f), { -0.1f, -1.f }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos + sf::Vector2f(15.f, 0.f), { 0.1f, -1.f }, mBulletSpeed, 1));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {0.f, -1.f}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos + sf::Vector2f(-15.f, 0.f), {-0.1f, -1.f}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos + sf::Vector2f(15.f, 0.f), {0.1f, -1.f}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
         break;
     case 7:
     {
         float yDir = -1.f; // (Bắn "lên" (up))
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { -0.3f, yDir }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { -0.2f, yDir }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { -0.1f, yDir }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { 0.0f, yDir }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { 0.1f, yDir }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { 0.2f, yDir }, mBulletSpeed, 1));
-        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, { 0.3f, yDir }, mBulletSpeed, 1));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {-0.3f, yDir}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {-0.2f, yDir}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {-0.1f, yDir}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {0.0f, yDir}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {0.1f, yDir}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {0.2f, yDir}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
+        mPlayerBulletsRef.push_back(Bullet(currentBulletTexture, centerPos, {0.3f, yDir}, mBulletSpeed, 1, sf::Vector2f(0.6f, 0.6f)));
         break;
     }
     }
@@ -163,8 +166,9 @@ void Player::shoot()
 void Player::megaUpgradeGun()
 {
     mGunLevel = 7; // (Bắn "7" (seven) "tia" (streams))
-    this->sprite.setTexture(mPlayerVIPTextureRef); // <-- BIẾN HÌNH TÀU
-    mIsUpgraded = true; // <-- Ghi nhớ "trạng thái" (state) "đã" (has been) "nâng cấp" (upgraded)
+    this->sprite.setTexture(mPlayerVIPTextureRef);// <-- BIẾN HÌNH TÀU
+    this->sprite.setScale(1.f, 1.f); 
+    mIsUpgraded = true;              // <-- Ghi nhớ "trạng thái" (state) "đã" (has been) "nâng cấp" (upgraded)
 }
 // --- THÊM "CÔNG THỨC" BỊ THIẾU NÀY VÀO CUỐI FILE ---
 void Player::resetPosition()
