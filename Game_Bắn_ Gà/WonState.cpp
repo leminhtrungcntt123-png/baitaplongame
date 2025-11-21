@@ -1,27 +1,33 @@
-#include "WonState.h"
-#include "Game.h"
-#include "PlayingState.h"  // (Cần "include" (include) "để" (to) "biết" (know) "cách" (how) "CHƠI LẠI" (RETRY))
-#include "MainMenuState.h" // (Cần "include" (include) "để" (to) "biết" (know) "cách" (how) "VỀ MENU" (RETURN TO MENU))
+#include "../header/WonState.h"
+#include "../header/Game.h"
+#include "../header/PlayingState.h"  // (Cần "include" (include) "để" (to) "biết" (know) "cách" (how) "CHƠI LẠI" (RETRY))
+#include "../header/MainMenuState.h" // (Cần "include" (include) "để" (to) "biết" (know) "cách" (how) "VỀ MENU" (RETURN TO MENU))
 
 // --- HÀM DỰNG (CONSTRUCTOR) CỦA CHUYÊN GIA CHIẾN THẮNG ---
-WonState::WonState(Game* game) :
-    BaseState(game),     // 1. "Kết nối" (Connect) "Hợp đồng" (Contract)
-    mFont(game->mFont)   // 2. "Kết nối" (Connect) "Tài Sản" (Assets) "Font" (Font)
+WonState::WonState(sf::Texture &WonBackgroundTexture, Game *game) : BaseState(game),   // 1. "Kết nối" (Connect) "Hợp đồng" (Contract)
+                                                                    mFont(game->mFont) // 2. "Kết nối" (Connect) "Tài Sản" (Assets) "Font" (Font)
 {
     // 3. "THI CÔNG" (IMPLEMENT) "SETUP" (SETUP) "UI" (UI)
+    mWonBackgroundTexture = WonBackgroundTexture;
+    mBackgroundSprite.setTexture(mWonBackgroundTexture);
+    sf::Vector2u textureSize = mWonBackgroundTexture.getSize();
+    sf::Vector2u windowSize = mGame->mWindow.getSize();
 
+    float scaleX = (float)windowSize.x / textureSize.x;
+    float scaleY = (float)windowSize.y / textureSize.y;
+    mBackgroundSprite.setScale(scaleX, scaleY);
     // 3a. Setup Lớp Phủ Mờ
     mOverlay.setSize(sf::Vector2f(800.f, 600.f));
     mOverlay.setFillColor(sf::Color(0, 0, 0, 150));
 
     // 3b. Setup Chữ "YOU WIN"
     mWonText.setFont(mFont);
-    mWonText.setString("YOU WIN!");
+    mWonText.setString("VICTORY!");
     mWonText.setCharacterSize(64);
     mWonText.setFillColor(sf::Color::Yellow); // (Màu Vàng)
     sf::FloatRect winBounds = mWonText.getLocalBounds();
     mWonText.setOrigin(winBounds.left + winBounds.width / 2.f,
-        winBounds.top + winBounds.height / 2.f);
+                       winBounds.top + winBounds.height / 2.f);
     mWonText.setPosition(800.f / 2.f, 600.f / 2.f - 100.f); // (Đẩy "lên" (up) "cao" (high))
 
     // 3c. Setup Nút "CHƠI LẠI" (Retry)
@@ -31,7 +37,7 @@ WonState::WonState(Game* game) :
     mRetryButton.setFillColor(sf::Color::White);
     sf::FloatRect retryBounds = mRetryButton.getLocalBounds();
     mRetryButton.setOrigin(retryBounds.left + retryBounds.width / 2.f,
-        retryBounds.top + retryBounds.height / 2.f);
+                           retryBounds.top + retryBounds.height / 2.f);
     mRetryButton.setPosition(800.f / 2.f, 600.f / 2.f + 0.f); // (Ở "giữa" (center))
 
     // 3d. Setup Nút "MENU"
@@ -41,13 +47,12 @@ WonState::WonState(Game* game) :
     mMenuButton.setFillColor(sf::Color::White);
     sf::FloatRect menuBounds = mMenuButton.getLocalBounds();
     mMenuButton.setOrigin(menuBounds.left + menuBounds.width / 2.f,
-        menuBounds.top + menuBounds.height / 2.f);
+                          menuBounds.top + menuBounds.height / 2.f);
     mMenuButton.setPosition(800.f / 2.f, 600.f / 2.f + 70.f); // (Ở "dưới" (below) "nút" (button) "Retry" (Retry))
 }
 
-
 // --- "ĐIỀU KHOẢN 1" (CLAUSE 1): PROCESSINPUT ---
-void WonState::processInput(sf::Event& event)
+void WonState::processInput(sf::Event &event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
@@ -69,7 +74,6 @@ void WonState::processInput(sf::Event& event)
     }
 }
 
-
 // --- "ĐIỀU KHOẢN 2" (CLAUSE 2): UPDATE ---
 void WonState::update(float deltaTime)
 {
@@ -89,12 +93,11 @@ void WonState::update(float deltaTime)
         mMenuButton.setFillColor(sf::Color::White);
 }
 
-
 // --- "ĐIỀU KHOẢN 3" (CLAUSE 3): RENDER ---
-void WonState::render(sf::RenderWindow& window)
+void WonState::render(sf::RenderWindow &window)
 {
     window.setView(window.getDefaultView());
-
+    window.draw(mBackgroundSprite);
     window.draw(mOverlay);     // 1. Vẽ Lớp Phủ Mờ
     window.draw(mWonText);     // 2. Vẽ Chữ "YOU WIN"
     window.draw(mRetryButton); // 3. Vẽ Nút "Chơi Lại"
