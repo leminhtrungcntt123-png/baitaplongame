@@ -1,10 +1,10 @@
-#include "WaveManager.h"
+#include "../header/WaveManager.h"
 #include <cstdlib> // Cho rand()
-#include "EnemyLvl2.h"
-#include "EnemyLvl1.h"
-#include "EnemyLvl3.h"
-#include "Boss.h"
-#include "Meteor.h" 
+#include "../header/EnemyLvl2.h"
+#include "../header/EnemyLvl1.h"
+#include "../header/EnemyLvl3.h"
+#include "../header/Boss.h"
+#include "../header/Meteor.h" 
 
 // --- HÀM DỰNG (CONSTRUCTOR) 
 WaveManager::WaveManager(std::vector<std::unique_ptr<EnemyBase>>& enemies,
