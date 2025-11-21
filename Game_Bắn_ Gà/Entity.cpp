@@ -1,4 +1,4 @@
-#include "Entity.h"
+#include "../header/Entity.h"
 
 // --- HÀM DỰNG "CHA" ---
 Entity::Entity(int initialHp, float initialSpeed)
