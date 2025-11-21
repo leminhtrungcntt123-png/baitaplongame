@@ -7,22 +7,24 @@
 class WonState : public BaseState
 {
 public:
-    WonState(Game* game); // "Hàm Dựng" (Constructor)
+    WonState(sf::Texture& mWonBackgroundTexture,Game *game); // "Hàm Dựng" (Constructor)
 
     // --- "THI CÔNG" (IMPLEMENT) "3" (THREE) "ĐIỀU KHOẢN" (CLAUSES) "HỢP ĐÔNG" (CONTRACT) ---
-    virtual void processInput(sf::Event& event) override;
+    virtual void processInput(sf::Event &event) override;
     virtual void update(float deltaTime) override;
-    virtual void render(sf::RenderWindow& window) override;
+    virtual void render(sf::RenderWindow &window) override;
 
 private:
     // --- "NHÀ KHO RIÊNG" (PRIVATE STORAGE) ---
-    sf::Font& mFont;
+    sf::Font &mFont;
 
     // (Các "Đối tượng" (Objects) "UI" (UI) "cụ thể" (specific))
-    sf::RectangleShape mOverlay;      // Lớp "phủ mờ" (dim overlay)
-    sf::Text mWonText;      // Chữ "YOU WIN"
+    sf::Texture mWonBackgroundTexture;
+    sf::Sprite mBackgroundSprite;
+    sf::RectangleShape mOverlay; // Lớp "phủ mờ" (dim overlay)
+    sf::Text mWonText;           // Chữ "YOU WIN"
 
     // (Các "nút" (buttons) "y hệt" (identical) "như" (as) "GameOver" (GameOver))
-    sf::Text mRetryButton;  // Chữ "CHOI LAI"
-    sf::Text mMenuButton;   // Chữ "MENU"
+    sf::Text mRetryButton; // Chữ "CHOI LAI"
+    sf::Text mMenuButton;  // Chữ "MENU"
 };
