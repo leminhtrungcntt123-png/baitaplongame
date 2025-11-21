@@ -1,6 +1,6 @@
-#include "DifficultyState.h"
-#include "PlayingState.h"
-#include "MainMenuState.h"
+#include "../header/DifficultyState.h"
+#include "../header/PlayingState.h"
+#include "../header/MainMenuState.h"
 
 DifficultyState::DifficultyState(Game* game) :
     BaseState(game),
@@ -43,7 +43,7 @@ DifficultyState::DifficultyState(Game* game) :
 
     // 5. Nút HARD
     mHardText.setFont(mFont);
-    mHardText.setString("HARD");
+    mHardText.setString("ASIAN MODE");
     mHardText.setCharacterSize(40);
     mHardText.setFillColor(sf::Color::Red);
     sf::FloatRect hardBounds = mHardText.getLocalBounds();
@@ -109,7 +109,7 @@ void DifficultyState::update(float deltaTime)
         mNormalText.setScale(1.0f, 1.0f);
     }
 
-    // --- XỬ LÝ HIỆU ỨNG NÚT HARD ---
+    // --- XỬ LÝ HIỆU ỨNG NÚT ASIAN MODE ---
     if (mHardText.getGlobalBounds().contains(mousePos))
     {
         mHardText.setScale(1.2f, 1.2f);
