@@ -1,15 +1,14 @@
-#include "Game.h"
-#include "MainMenuState.h"
-#include "PlayingState.h" 
-#include <iostream> 
+#include "../header/Game.h"
+#include "../header/MainMenuState.h"
+#include "../header/PlayingState.h"
+#include <iostream>
 #include <stdexcept>
 
-Game::Game() :
-    mWindow(sf::VideoMode(800, 600), "Game Ban Ga!")
+Game::Game() : mWindow(sf::VideoMode(800, 600), "COSMIC COMMANDER")
 {
     mWindow.setFramerateLimit(60);
-    updateView(); 
-    loadAssets(); 
+    updateView();
+    loadAssets();
     mShootSound.setBuffer(mShootBuffer);
     mExplosionSound.setBuffer(mExplosionBuffer);
     mPowerupSound.setBuffer(mPowerupBuffer);
@@ -22,60 +21,69 @@ Game::Game() :
 // --- HÀM TẢI TÀI NGUYÊN (GIỮ NGUYÊN) ---
 void Game::loadAssets()
 {
-    if (!mPlayerTexture.loadFromFile("player.png"))
-        throw std::runtime_error("Error: Khong the tai file player.png!");
-    if (!mBulletTexture.loadFromFile("bullet.png"))
-        throw std::runtime_error("Error: Khong the tai file bullet.png!");
-    if (!mEnemy1Texture.loadFromFile("enemy1.png"))
-        throw std::runtime_error("Error: Khong the tai file enemy1.png!");
-    if (!mEnemy3Texture.loadFromFile("enemy3.png"))
-        throw std::runtime_error("Error: Khong the tai file enemy3.png!");
-    if (!mPowerupTexture.loadFromFile("powerup.png"))
-        throw std::runtime_error("Error: Khong the tai file powerup.png!");
-    if (!mBackgroundTexture.loadFromFile("gameplay_background.png"))
-        throw std::runtime_error("Error: Khong the tai file gameplay_background.png!");
-    if (!mFont.loadFromFile("font.ttf"))
-        throw std::runtime_error("Error: Khong the tai file font.ttf!");
-    if (!mShootBuffer.loadFromFile("shoot.ogg"))
-        throw std::runtime_error("Error: Khong the tai file shoot.ogg!");
-    if (!mExplosionBuffer.loadFromFile("explosion.ogg"))
-        throw std::runtime_error("Error: Khong the tai file explosion.ogg!");
-    if (!mPowerupBuffer.loadFromFile("powerup.ogg"))
-        throw std::runtime_error("Error: Khong the tai file powerup.ogg!");
-    if (!mEnemyBulletTexture.loadFromFile("BulletEnemy2.png"))
-        throw std::runtime_error("Error: Khong the tai file BulletEnemy2.png!");
-    if (!mEnemy2Texture.loadFromFile("enemy2.png"))
-        throw std::runtime_error("Error: Khong the tai file enemy2.png!");
-    if (!mBossTexture.loadFromFile("boss.png"))
-        throw std::runtime_error("Error: Khong the tai file boss.png!");
-    if (!mBossBulletTexture.loadFromFile("BulletBoss.png"))
-        throw std::runtime_error("Error: Khong the tai file BulletBoss.png!");
-    if (!mMenuBackgroundTexture.loadFromFile("background.png"))
-        throw std::runtime_error("Error: Khong the tai menu_background.png!");
-    if (!mTitleTexture.loadFromFile("title.png"))
-        throw std::runtime_error("Error: Khong the tai menu_title.png!");
-    if (!mPlayButtonTexture.loadFromFile("play_button.png"))
-        throw std::runtime_error("Error: Khong the tai menu_play_button.png!");
-    if (!mPauseButtonTexture.loadFromFile("pause_button.png"))
-        throw std::runtime_error("Error: Khong the tai file pause_button.png!");
+    // Helper: try to load a texture, if it fails create a simple placeholder
+    auto loadTextureOrPlaceholder = [&](sf::Texture &tex, const std::string &path, int w = 64, int h = 64)
+    {
+        if (!tex.loadFromFile(path))
+        {
+            std::cerr << "Warning: could not load '" << path << "' — using placeholder." << std::endl;
+            sf::Image img;
+            img.create(w, h, sf::Color::Magenta);
+            tex.loadFromImage(img);
+            return false;
+        }
+        return true;
+    };
 
-    if (!mPlayerVIPTexture.loadFromFile("PlayerVIP.png"))
-        throw std::runtime_error("Loi PlayerVIP.png!");
+    // Try loading textures; missing ones become placeholders so app can run without assets
+    loadTextureOrPlaceholder(mPlayerTexture, "model/player6.png",24, 24);
+    loadTextureOrPlaceholder(mBulletTexture, "model/bullet.png", 8, 16);
+    loadTextureOrPlaceholder(mEnemy1Texture, "model/ruoi.png", 48, 48);
+    loadTextureOrPlaceholder(mEnemy3Texture, "model/gian.png", 48, 48);
+    loadTextureOrPlaceholder(mPowerupTexture, "model/powerup.png", 24, 24);
+    loadTextureOrPlaceholder(mBackgroundTexture, "model/backgound1.png", 800, 600);
 
-    if (!mBulletPlayerVIPTexture.loadFromFile("BulletPlayerVIP.png"))
-        throw std::runtime_error("Loi BulletPlayerVIP.png!");
+    // Font: if missing, set flag and continue (texts will be guarded)
+    if (!mFont.loadFromFile("model/font.ttf"))
+    {
+        std::cerr << "Warning: could not load font.ttf — text will be disabled." << std::endl;
+        mFontLoaded = false;
+    }
+    else
+    {
+        mFontLoaded = true;
+    }
 
-    if (!mItemChangePlayerTexture.loadFromFile("ItemChangePlayer.png"))
-        throw std::runtime_error("Loi ItemChangePlayer.png!");
+    // Sounds: try to load, otherwise warn and continue
+    if (!mShootBuffer.loadFromFile("model/shoot.ogg"))
+    {
+        std::cerr << "Warning: could not load shoot.ogg" << std::endl;
+    }
+    if (!mExplosionBuffer.loadFromFile("model/explosion.ogg"))
+    {
+        std::cerr << "Warning: could not load explosion.ogg" << std::endl;
+    }
+    if (!mPowerupBuffer.loadFromFile("model/powerup.ogg"))
+    {
+        std::cerr << "Warning: could not load powerup.ogg" << std::endl;
+    }
 
-    if (!mMeteoriteTexture.loadFromFile("Meteorite.png"))
-        throw std::runtime_error("Loi Meteorite.png!");
-
-    if (!mItemBuffHPTexture.loadFromFile("ItemBuffHP.png"))
-        throw std::runtime_error("Loi ItemBuffHP.png!");
-
-    if (!mSelectModeTexture.loadFromFile("background_play.png"))
-        throw std::runtime_error("Loi background_play.png!");
+    loadTextureOrPlaceholder(mEnemyBulletTexture, "model/BulletEnemy2.png", 8, 16);
+    loadTextureOrPlaceholder(mEnemy2Texture, "model/ONG.png", 48, 48);
+    loadTextureOrPlaceholder(mBossTexture, "model/boss.png", 128, 128);
+    loadTextureOrPlaceholder(mBossBulletTexture, "model/BulletBoss.png", 6, 12);
+    loadTextureOrPlaceholder(mMenuBackgroundTexture, "model/backgound3.png", 800, 600);
+    loadTextureOrPlaceholder(mTitleTexture, "model/title.png", 400, 100);
+    loadTextureOrPlaceholder(mPlayButtonTexture, "model/play_button.png", 160, 48);
+    loadTextureOrPlaceholder(mPauseButtonTexture, "model/pause_button.png", 48, 48);
+    loadTextureOrPlaceholder(mPlayerVIPTexture, "model/PlayerVIP2.png", 64, 64);
+    loadTextureOrPlaceholder(mBulletPlayerVIPTexture, "model/BulletPlayerVIP.png", 8, 16);
+    loadTextureOrPlaceholder(mItemChangePlayerTexture, "model/ItemChangePlayer.png", 32, 32);
+    loadTextureOrPlaceholder(mMeteoriteTexture, "model/Meteorite.png", 64, 64);
+    loadTextureOrPlaceholder(mItemBuffHPTexture, "model/ItemBuffHP.png", 24, 24);
+    loadTextureOrPlaceholder(mSelectModeTexture, "model/backgound3.png", 800, 600);
+    loadTextureOrPlaceholder(mLoseBackground, "model/backgoundlose.png", 800, 600);
+    loadTextureOrPlaceholder(mWonBackground, "model/backgoundwin.png", 800, 600);
 }
 
 // --- HÀM "RUN" CHÍNH (GIỮ NGUYÊN) ---
@@ -163,7 +171,7 @@ void Game::changeState(std::unique_ptr<BaseState> state)
     pushState(std::move(state));
 }
 
-BaseState* Game::getCurrentState()
+BaseState *Game::getCurrentState()
 {
     if (mStates.empty())
         return nullptr;
