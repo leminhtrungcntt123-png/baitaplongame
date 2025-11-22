@@ -1,8 +1,6 @@
 #include "../header/EnemyLvl2.h"
 
-// ---------------------------------------------------------
 // 1. CONSTRUCTOR (ĐÃ SỬA)
-// ---------------------------------------------------------
 EnemyLvl2::EnemyLvl2(sf::Texture& texture, sf::Vector2f startPosition)
     : EnemyBase(2, 120.f) // 2 HP, Speed 120
 {
@@ -14,14 +12,12 @@ EnemyLvl2::EnemyLvl2(sf::Texture& texture, sf::Vector2f startPosition)
     this->sprite.setPosition(startPosition);
     this->scoreValue = 20; 
 
-    // -----------------------------------------------------
-    // KHỞI TẠO ANIMATION (PHẦN THÊM MỚI)
-    // -----------------------------------------------------
+    // KHỞI TẠO ANIMATION 
     
     // BƯỚC 1: Điền thông số file ảnh của Quái Level 2
     // (Ví dụ: Ảnh rộng 300px, có 6 hình -> 300/6 = 50)
-    int frameWidth = 290;   // <--- HÃY THAY SỐ NÀY THEO ẢNH CỦA BẠN
-    int frameHeight = 300;  // <--- HÃY THAY SỐ NÀY THEO ẢNH CỦA BẠN
+    int frameWidth = 290;   // 
+    int frameHeight = 300;  // 
     int numFrames = 3;     // <--- Số hình động tác bay của Lv2
     float speed = 0.1f;    // Tốc độ vỗ cánh
     
@@ -32,18 +28,14 @@ EnemyLvl2::EnemyLvl2(sf::Texture& texture, sf::Vector2f startPosition)
     this->sprite.setTextureRect(this->animationRun.getCurrentFrame());
 }
 
-// ---------------------------------------------------------
-// 2. UPDATE (ĐÃ SỬA)
-// ---------------------------------------------------------
+// 2. UPDATE 
 void EnemyLvl2::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture, float windowWidth)
 {
     // 1. Gọi logic gốc của Cha (di chuyển + tự bắn đạn)
     EnemyBase::update(deltaTime, enemyBullets, enemyBulletTexture, windowWidth);
 
-    // -----------------------------------------------------
-    // CẬP NHẬT ANIMATION (PHẦN THÊM MỚI)
-    // -----------------------------------------------------
+    // CẬP NHẬT ANIMATION
     
     // 2. Tính toán khung hình tiếp theo
     this->animationRun.update(deltaTime);
@@ -52,9 +44,7 @@ void EnemyLvl2::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     this->sprite.setTextureRect(this->animationRun.getCurrentFrame());
 }
 
-// ---------------------------------------------------------
-// 3. SHOOT (GIỮ NGUYÊN)
-// ---------------------------------------------------------
+// 3. SHOOT 
 void EnemyLvl2::shoot(std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture)
 {
@@ -67,3 +57,4 @@ void EnemyLvl2::shoot(std::vector<Bullet>& enemyBullets,
 
     enemyBullets.push_back(Bullet(enemyBulletTexture, pos, dir, bulletSpeed, damage,sf::Vector2f(0.6f,0.6f)));
 }
+
