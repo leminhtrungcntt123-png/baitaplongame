@@ -55,10 +55,10 @@ int Entity::getMaxHP() const
 
 sf::Vector2f Entity::getCenterPosition() const
 {
-    // (Lấy "ranh giới" (bounds) "toàn cục" (global) "của" (of) "sprite" (sprite))
+    // (Lấy "ranh giới" 
     sf::FloatRect bounds = this->sprite.getGlobalBounds();
 
-    // (Tính toán "và" (and) "trả về" (return) "tọa độ" (coordinates) "trung tâm" (center))
+    // (Tính toán và trả về tọa độ trung tâm)
     return sf::Vector2f(bounds.left + bounds.width / 2.f,
         bounds.top + bounds.height / 2.f);
 }
