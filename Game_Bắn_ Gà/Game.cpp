@@ -18,7 +18,7 @@ Game::Game() : mWindow(sf::VideoMode(800, 600), "COSMIC COMMANDER")
     mDifficulty = Difficulty::Normal;
 }
 
-// --- HÀM TẢI TÀI NGUYÊN (GIỮ NGUYÊN) ---
+// --- HÀM TẢI TÀI NGUYÊN  ---
 void Game::loadAssets()
 {
     // Helper: try to load a texture, if it fails create a simple placeholder
@@ -86,7 +86,7 @@ void Game::loadAssets()
     loadTextureOrPlaceholder(mWonBackground, "model/backgoundwin.png", 800, 600);
 }
 
-// --- HÀM "RUN" CHÍNH (GIỮ NGUYÊN) ---
+// --- HÀM "RUN" CHÍNH ---
 void Game::run()
 {
     while (mWindow.isOpen())
@@ -110,7 +110,7 @@ void Game::processInput()
     sf::Event event;
     while (mWindow.pollEvent(event))
     {
-        // 1. "Luôn" (Always) "kiểm tra" (check) "Nút X" (Close Button) "và" (and) "Resize" (Resize) "trước" (first)
+        // 1. Luôn kiểm tra close button
         if (event.type == sf::Event::Closed)
             mWindow.close();
         else if (event.type == sf::Event::Resized)
@@ -119,14 +119,13 @@ void Game::processInput()
         }
         else
         {
-            // 2. "Ủy thác" (Delegate) "phần" (the) "còn lại" (rest) "cho" (to) "Chuyên gia" (Specialist) "hiện tại" (current)
+            // 2. Ủy thác phần còn lại chohamf chuyên dụng
             if (!mStates.empty())
                 mStates.top()->processInput(event);
         }
     }
 }
 
-// --- "PHÒNG BAN" (DEPARTMENT) "UPDATE" (UPDATE) "SẠCH SẼ" (CLEAN) MỚI ---
 void Game::update(float deltaTime)
 {
     // "Ủy thác" (Delegate) "toàn bộ" (all) "công việc" (work) "cho" (to) "Chuyên gia" (Specialist) "hiện tại" (current)
@@ -136,21 +135,20 @@ void Game::update(float deltaTime)
     }
 }
 
-// --- "PHÒNG BAN" (DEPARTMENT) "RENDER" (RENDER) "SẠCH SẼ" (CLEAN) MỚI ---
 void Game::render()
 {
-    mWindow.clear(); // 1. "Nhạc trưởng" (Game) "luôn" (always) "Xóa" (Clears) "Màn hình" (Screen)
+    mWindow.clear(); // 1. "Nhạc trưởng" Game luôn xóa màn hình
 
-    // 2. "Ủy thác" (Delegate) "toàn bộ" (all) "công việc" (work) "Vẽ" (Drawing) "cho" (to) "Chuyên gia" (Specialist) "hiện tại" (current)
+    // 2. Dùng hàm Render chuyên dụng để vẽ
     if (!mStates.empty())
     {
         mStates.top()->render(mWindow);
     }
 
-    mWindow.display(); // 3. "Nhạc trưởng" (Game) "luôn" (always) "Hiển Thị" (Displays) "Màn hình" (Screen)
+    mWindow.display(); // 3. "Nhạc trưởng" Game luôn luôn hiển thị màn hình
 }
 
-// --- "CÁC" (THE) "HÀM" (FUNCTIONS) "QUẢN LÝ" (MANAGER) "STATE" (STATE) "MỚI" (NEW) ---
+// Các hàm quản lý State
 void Game::pushState(std::unique_ptr<BaseState> state)
 {
     mStates.push(std::move(state));
@@ -166,7 +164,6 @@ void Game::popState()
 
 void Game::changeState(std::unique_ptr<BaseState> state)
 {
-    // (Gỡ "bỏ" (pop) "state" (state) "cũ" (old) "TRƯỚC" (BEFORE), "sau đó" (then) "đẩy" (push) "state" (state) "mới" (new) "vào" (onto))
     popState();
     pushState(std::move(state));
 }
@@ -178,7 +175,7 @@ BaseState *Game::getCurrentState()
     return mStates.top().get();
 }
 
-// --- "HÀM" (FUNCTION) "LETTERBOX" (LETTERBOX) (GIỮ NGUYÊN) ---
+// --- Hàm Letterbox
 void Game::updateView()
 {
     const float DESIGN_WIDTH = 800.f;
@@ -205,3 +202,4 @@ void Game::updateView()
     view.setViewport(sf::FloatRect(viewportX, viewportY, viewportWidth, viewportHeight));
     mWindow.setView(view);
 }
+
