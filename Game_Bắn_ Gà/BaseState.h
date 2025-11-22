@@ -1,8 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <memory> 
-
-// (Chúng ta "Forward Declare" Game để "tránh" (avoid) "lỗi" (bug) "include" (include) "vòng tròn" (circular))
 class Game;
 
 class BaseState
@@ -14,8 +12,6 @@ public:
     // "Hàm Hủy" ảo (virtual) bắt buộc phải có
     virtual ~BaseState() {}
 
-    // (Hàm "ảo" (virtual) "thuần túy" (pure) (ký hiệu "= 0"))
-
     // "Việc 1: Xử lý Input" (Job 1: Process Input)
     virtual void processInput(sf::Event& event) = 0;
 
@@ -23,11 +19,11 @@ public:
     virtual void update(float deltaTime) = 0;
 
     // "Việc 3: Vẽ" (Job 3: Render)
-    // (Chúng ta "truyền" (pass) "cửa sổ" (window) "vào" (into) "hàm" (function) "vẽ" (render))
+    // (Chúng ta truyền cửa sổ window vào hàm render)
     virtual void render(sf::RenderWindow& window) = 0;
 
 protected:
-    // "Một" (A) "con trỏ" (pointer) "để" (to) "Chuyên gia" (Specialist) "giao tiếp" (talk) "với" (with) "Nhạc trưởng" (Game)
-    // (ví dụ: mGame->pushState(...) "hoặc" (or) mGame->mWindow)
+    // Một con trỏ để giao tiếp với Game
+    // (ví dụ: mGame->pushState(...) hoặc mGame->mWindow)
     Game* mGame;
 };
