@@ -1,15 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-// "Siêu Lớp Cha" chứa tất cả code "chung"
-// mà CẢ Player VÀ EnemyBase đều sử dụng
+// Lớp chung cho Player và Enemy kế thừa
 class Entity
 {
 public:
     // Hàm Dựng: Thiết lập các giá trị chung
     Entity(int initialHp, float initialSpeed);
 
-    // QUAN TRỌNG: Hàm Hủy "Ảo" (Virtual Destructor)
+    // QUAN TRỌNG: Hàm Hủy "Ảo" 
     // Bắt buộc phải có khi dùng kế thừa với unique_ptr
     virtual ~Entity() = default;
 
