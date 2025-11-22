@@ -1,8 +1,6 @@
 #include "../header/EnemyLvl3.h"
 
-// ---------------------------------------------------------
 // 1. CONSTRUCTOR
-// ---------------------------------------------------------
 EnemyLvl3::EnemyLvl3(sf::Texture& texture, sf::Vector2f startPosition)
     : EnemyBase(5, 100.f) // 5 HP, Tốc độ 100
 {
@@ -17,9 +15,7 @@ EnemyLvl3::EnemyLvl3(sf::Texture& texture, sf::Vector2f startPosition)
     this->sprite.setScale(0.4f, 0.4f);
     this->sprite.setPosition(startPosition);
 
-    // -----------------------------------------------------
-    // KHỞI TẠO ANIMATION (PHẦN THÊM MỚI)
-    // -----------------------------------------------------
+    // KHỞI TẠO ANIMATION 
     // BƯỚC 1: Điền thông số file ảnh của Quái Level 3
     // Hãy mở ảnh lên và xem chiều rộng/cao của 1 khung hình
     int frameWidth = 290;   // <--- THAY SỐ NÀY (Ví dụ: ảnh rộng 400px, 8 hình -> 50)
@@ -35,18 +31,14 @@ EnemyLvl3::EnemyLvl3(sf::Texture& texture, sf::Vector2f startPosition)
     this->sprite.setTextureRect(this->animationRun.getCurrentFrame());
 }
 
-// ---------------------------------------------------------
 // 2. UPDATE
-// ---------------------------------------------------------
 void EnemyLvl3::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture, float windowWidth)
 {
     // 1. Gọi hàm update của Cha (Di chuyển + Tự động Bắn)
     EnemyBase::update(deltaTime, enemyBullets, enemyBulletTexture, windowWidth);
 
-    // -----------------------------------------------------
     // CẬP NHẬT ANIMATION (PHẦN THÊM MỚI)
-    // -----------------------------------------------------
     // 2. Tính toán frame tiếp theo
     this->animationRun.update(deltaTime);
 
@@ -54,9 +46,7 @@ void EnemyLvl3::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     this->sprite.setTextureRect(this->animationRun.getCurrentFrame());
 }
 
-// ---------------------------------------------------------
 // 3. SHOOT (GIỮ NGUYÊN)
-// ---------------------------------------------------------
 void EnemyLvl3::shoot(std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture)
 {
@@ -74,3 +64,4 @@ void EnemyLvl3::shoot(std::vector<Bullet>& enemyBullets,
     // Tạo viên đạn
     enemyBullets.push_back(Bullet(enemyBulletTexture, pos, dir, bulletSpeed, damage,sf::Vector2f(0.6f,0.6f)));
 }
+
