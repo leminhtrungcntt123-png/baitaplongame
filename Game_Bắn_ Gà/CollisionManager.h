@@ -6,8 +6,8 @@
 #include "Powerup.h"
 #include "Player.h"
 
-// Chúng ta dùng namespace cho các "hệ thống" (systems)
-// không cần lưu trữ trạng thái (stateless)
+// Chúng ta dùng namespace cho các "hệ thống"
+// không cần lưu trữ trạng thái
 namespace CollisionManager
 {
     // Một hàm tĩnh duy nhất, nhận 2 danh sách
@@ -22,3 +22,4 @@ namespace CollisionManager
         std::vector<std::unique_ptr<EnemyBase>>& enemies,
         std::vector<Bullet>& enemyBullets);
 }
+
