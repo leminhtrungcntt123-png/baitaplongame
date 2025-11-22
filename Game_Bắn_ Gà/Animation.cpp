@@ -1,5 +1,5 @@
 #include "../header/Animation.h"
-#include <iostream> // Giữ lại nếu bạn vẫn muốn dùng std::cout để debug
+#include <iostream> // Giữ lại nếu vẫn muốn dùng std::cout để debug
 using namespace sf;
 using namespace std;
 
@@ -19,7 +19,7 @@ Animation::Animation(const sf::Texture *tex, int frameWidth, int frameHeight, fl
     : texture(tex), frameTime(frameTime), timer(0.f), currentFrame(0), loop(true)
 {
     // *** SỬA: XÓA DÒNG NÀY (row = 0;) để dùng row truyền vào đúng cách ***
-    // row = 0;  // <-- ĐÃ XÓA: Bug gây animation idle/move trùng lặp
+    // row = 0; 
 
     if (!texture)
     {
@@ -36,7 +36,7 @@ Animation::Animation(const sf::Texture *tex, int frameWidth, int frameHeight, fl
     }
 
     frames.reserve(columns);
-    int startY = row * frameHeight;  // <-- Giờ dùng row đúng (0 cho idle, 1 cho move)
+    int startY = row * frameHeight;  
 
     for (int x = 0; x < columns; ++x)
     {
