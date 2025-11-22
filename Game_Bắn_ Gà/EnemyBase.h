@@ -3,7 +3,6 @@
 #include "Bullet.h"
 #include "Entity.h"
 #include "Animation.h"
-// --- "NÂNG" 2 ENUM RA NGOÀI (Sửa lỗi C2039) ---
 enum class AIState
 {
     Entering,
@@ -46,3 +45,4 @@ protected:
     // (Hàm "riêng")
     void setLoot(int chance);
 };
+
