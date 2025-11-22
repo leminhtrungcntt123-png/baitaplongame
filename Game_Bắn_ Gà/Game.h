@@ -21,15 +21,13 @@ public:
     Game();
     void run();
 
-    // --- "HÀM QUẢN LÝ" (MANAGER FUNCTIONS) "MỚI" (NEW) ---
+    // --- Hàm quản lí ---
     void pushState(std::unique_ptr<BaseState> state);
     void popState();
     void changeState(std::unique_ptr<BaseState> state);
-    BaseState *getCurrentState(); // (Lấy "Chuyên gia" (Specialist) "hiện tại" (current))
+    BaseState *getCurrentState(); // Lấy chuyên gia hiện tại
 
-    // --- "TÚI ĐỒ" (PUBLIC ASSETS) (CHO "CHUYÊN GIA" (SPECIALISTS) "SỬ DỤNG" (TO USE)) ---
-    // (Tất cả "Tài Sản" (Assets) "bây giờ" (now) "là" (are) "public" (public) "để" (for) "các" (the) "State" (States) "lấy" (to get))
-
+    // --- Túi đồ cho chuyên gia sử dụng ---
     sf::RenderWindow mWindow;
 
     // --- Textures ---
@@ -72,15 +70,15 @@ public:
     bool mFontLoaded = true;
 
 private:
-    // --- "HÀM" (FUNCTIONS) "PHÒNG BAN" (DEPARTMENT) "GỌN GÀNG" (CLEAN) ---
     void processInput();
     void update(float deltaTime);
     void render();
     void loadAssets();
-    void updateView(); // (Giữ lại "hàm" (function) "sửa lỗi" (bug fix) "Letterbox" (Letterbox))
+    void updateView(); 
 
-    // --- "BIẾN" (VARIABLES) "HỆ THỐNG" (SYSTEM) ---
+    // --- Biến hệ thống---
     sf::Clock mDeltaClock;
 
     std::stack<std::unique_ptr<BaseState>> mStates;
 };
+
