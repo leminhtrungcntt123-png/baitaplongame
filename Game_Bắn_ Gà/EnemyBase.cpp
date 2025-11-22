@@ -10,13 +10,12 @@ EnemyBase::EnemyBase(int initialHp, float initialSpeed)
     mHorizontalDirection = 1.f;
     dropType = LootType::None;
     scoreValue = 0;
-    // (Không cần khởi tạo sprite, hp, speed... "Cha" (Entity) đã làm)
+    // (Không cần khởi tạo sprite, hp, speed...(Entity) đã làm)
 }
 
 // 2. XÓA BỎ các hàm "chung" (takeDamage, isAlive, draw)
 
 // 3. "Công thức" update (Giờ đã "chuẩn" 100% với tên biến của BẠN)
-// Logic update "CHUNG" MỚI (Đã "vá" 100%)
 void EnemyBase::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture, float windowWidth)
 {
@@ -25,7 +24,7 @@ void EnemyBase::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     if (shootTimer >= shootCooldown)
     {
         shootTimer = 0.f;
-        // "Ủy thác" (Delegate) "logic" (logic) "bắn" (shoot) "cho" (to) "Con" (Child)
+        // "Ủy thác" logic bắn
         this->shoot(enemyBullets, enemyBulletTexture);
     }
 
@@ -91,3 +90,4 @@ void EnemyBase::setLoot(int chance)
     else
         this->dropType = None;
 }
+
