@@ -1,6 +1,6 @@
 #pragma once
 #include "EnemyBase.h" 
-#include "Animation.h" // <--- THÊM: Include file Animation
+#include "Animation.h" 
 
 class EnemyLvl2 : public EnemyBase
 {
@@ -17,3 +17,4 @@ public:
     virtual void shoot(std::vector<Bullet>& enemyBullets,
         sf::Texture& enemyBulletTexture) override;
 };
+
