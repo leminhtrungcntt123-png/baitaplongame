@@ -4,7 +4,7 @@
 // Lớp Boss "khổng lồ"
 class Boss : public EnemyBase
 {
-protected:                          // <-- THÊM KHỐI NÀY VÀO
+protected:                         
     sf::Texture &mBossBulletTextureRef; // "Túi" riêng để chứa đạn Boss
     Animation animationRun;
 public:
@@ -20,3 +20,4 @@ public:
     virtual void shoot(std::vector<Bullet> &enemyBullets,
                        sf::Texture &enemyBulletTexture) override;
 };
+
