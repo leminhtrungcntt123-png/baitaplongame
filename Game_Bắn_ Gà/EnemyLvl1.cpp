@@ -1,8 +1,6 @@
 #include "../header/EnemyLvl1.h"
 
-// ---------------------------------------------------------
 // 1. CONSTRUCTOR
-// ---------------------------------------------------------
 EnemyLvl1::EnemyLvl1(sf::Texture& texture, sf::Vector2f startPosition)
     : EnemyBase(1, 150.f) // 1 HP, Speed 150
 {
@@ -13,11 +11,7 @@ EnemyLvl1::EnemyLvl1(sf::Texture& texture, sf::Vector2f startPosition)
     this->sprite.setPosition(startPosition);
     this->sprite.setScale(0.3f, 0.3f); 
     this->scoreValue = 10;
-
-    // -----------------------------------------------------
-    // KHỞI TẠO ANIMATION (PHẦN BẠN CẦN THÊM)
-    // -----------------------------------------------------
-    
+    // KHỞI TẠO ANIMATION    
     // BƯỚC 1: Bạn cần điền thông số thật của ảnh vào đây:
     int frameWidth = 225;   // <--- Chiều rộng 1 khung hình nhỏ (Ví dụ: ảnh rộng 200px có 4 hình => 200/4 = 50)
     int frameHeight = 300;  // <--- Chiều cao 1 khung hình nhỏ
@@ -32,18 +26,14 @@ EnemyLvl1::EnemyLvl1(sf::Texture& texture, sf::Vector2f startPosition)
     this->sprite.setTextureRect(this->aniamtionRun.getCurrentFrame());
 }
 
-// ---------------------------------------------------------
 // 2. UPDATE
-// ---------------------------------------------------------
 void EnemyLvl1::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     sf::Texture& enemyBulletTexture, float windowWidth)
 {
     // Gọi logic di chuyển của Cha (để nó tự bay xuống)
     EnemyBase::update(deltaTime, enemyBullets, enemyBulletTexture, windowWidth);
 
-    // -----------------------------------------------------
-    // CẬP NHẬT ANIMATION (PHẦN BẠN CẦN THÊM)
-    // -----------------------------------------------------
+    // CẬP NHẬT ANIMATION 
     
     // 1. Tính toán chuyển frame
     this->aniamtionRun.update(deltaTime);
@@ -51,3 +41,4 @@ void EnemyLvl1::update(float deltaTime, std::vector<Bullet>& enemyBullets,
     // 2. Áp dụng hình cắt mới vào Sprite (để hình thay đổi trên màn hình)
     this->sprite.setTextureRect(this->aniamtionRun.getCurrentFrame());
 }
+
